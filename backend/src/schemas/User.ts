@@ -1,16 +1,19 @@
 import mongoose, { Schema } from 'mongoose'
 
 const UserSchema: Schema = new Schema({
-  createdAt: Number,
+  createdAt: Date,
   emailAddress: String,
+  username: String,
+  password: String,
   minecraftUuid: String,
-  id: Number,
+  id: String,
   role: String,
   banned: Boolean,
   bannedBy: String,
   bannedAt: String,
   bannedUntil: Number,
   servers: Object,
+  verificationToken: String
 })
 
 export default mongoose.model('user', UserSchema)
