@@ -13,7 +13,8 @@ const UserSchema: Schema = new Schema({
   bannedAt: String,
   bannedUntil: Number,
   servers: Object,
-  verificationToken: String
+  verificationToken: String,
+  emailVerified: Boolean
 })
 
 export default mongoose.model('user', UserSchema)

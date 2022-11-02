@@ -7,7 +7,7 @@ import moment from 'moment'
 import { v4 as uuidv4 } from 'uuid'
 import bodyParser from 'body-parser'
 import { authMiddleware } from '../middleware/UserMiddleware'
-import { sendEmailVerification } from '../utils/Mail'
+import { sendEmailVerification, sendMail, verifyEmailSuccessTemplate } from '../utils/Mail'
 import { logger } from '../index'
 
 const AccountRouter = Router()
@@ -78,6 +78,25 @@ AccountRouter.route('/login').post(async (req, res) => {
   })
 })
 
+AccountRouter.route('/verify').get(async (req, res) => {
+  if (!req.query.token) return res.send('You did not provide an email verification token.')
+  let user = await User.findOne({
+    verificationToken: req.query.token,
+    emailVerified: false, 
+  }).exec()
+  if (!user) return res.send('Could not find a user with that verification key. Perhaps your account is already verified?')
+  user.emailVerified = true
+  await sendMail(
+    user.emailAddress, 
+    'Your email was successfully verified, thank you for using our service!',
+    verifyEmailSuccessTemplate(user.username)
+  )
+  logger.info(`[/accounts] Successfully verified the email ${user.emailAddress} (${user.username}).`)
+  await user.save()
+  return res.send('Your email was successfully verified!')
+})
+
+
 AccountRouter.route('/register').post(async (req, res) => {
   let errors = []
   if (!req.body) errors.push('No body')
@@ -123,6 +142,7 @@ AccountRouter.route('/register').post(async (req, res) => {
     username: req.body.username,
     id: uuidv4(),
     role: 'default',
+    emailVerified: false,
     verificationToken: crypto.randomBytes(18).toString('hex'),
     servers: {}
   }) 
