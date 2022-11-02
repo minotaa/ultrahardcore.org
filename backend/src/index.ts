@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { RootRouter, AccountRouter } from './routes'
+import { RootRouter, AccountRouter, MinecraftRouter } from './routes'
 import express from 'express'
 import kleur from 'kleur'
 import cors from 'cors'
@@ -30,5 +30,6 @@ new db()
 app.use(cors())
 app.use('/', RootRouter)
 app.use('/account', AccountRouter)
+app.use('/minecraft', MinecraftRouter)
 
 app.listen(process.env.SERVER_PORT, () => logger.info(`Listening on port ${process.env.SERVER_PORT}.`))

@@ -13,7 +13,9 @@ const UserSchema: Schema = new Schema({
   bannedAt: String,
   bannedUntil: Number,
   servers: Object,
+  minecraftToken: String,
   verificationToken: String,
+  minecraftVerified: Boolean,
   emailVerified: Boolean
 })
 

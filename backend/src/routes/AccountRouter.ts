@@ -143,7 +143,9 @@ AccountRouter.route('/register').post(async (req, res) => {
     id: uuidv4(),
     role: 'default',
     emailVerified: false,
+    minecraftVerified: false,
     verificationToken: crypto.randomBytes(18).toString('hex'),
+    minecraftToken: crypto.randomBytes(6).toString('hex'),
     servers: {}
   }) 
   res.status(200).json({
