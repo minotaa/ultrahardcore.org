@@ -17,6 +17,23 @@ MinecraftRouter.route('/').all(mcMiddleware, (req, res) => {
   })
 })
 
+MinecraftRouter.route('/getUser').get(mcMiddleware, async (req, res) => {
+  let user = await User.findOne({
+    minecraftUuid: req.query.uuid
+  }).exec()
+  if (!user) {
+    return res.status(400).json({
+      success: false,
+      message: 'Could not find a user with that UUID.'
+    })
+  } else {
+    return res.status(200).json({ 
+      success: true,
+      message: 'Found a user with that UUID.'
+    })
+  }
+})
+
 MinecraftRouter.route('/verify').get(mcMiddleware, async (req, res) => {
   // req.query.uuid
   // req.query.username
