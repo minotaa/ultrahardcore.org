@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+* {
+  font-family: 'Roboto', sans-serif;
+}
 
 .button {
   background-color: #fa4b4b;
@@ -11,12 +16,37 @@
 }
 
 .button:focus {
-  outline: #3f69f2 solid 2px;
+  background-color: #ff2b2b;
+  transition: background-color 0.5s
 }
 
 .button:hover {
   background-color: #ff2b2b;
   transition: background-color 0.5s
+}
+
+input[type=text], 
+input[type=password], 
+input[type=email] 
+{
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  border: none;
+  border-radius: 6px;
+  border-width: 1.5px;
+  width: 300px;
+  border-style: solid;
+  border-color: #737373;
+  margin-top: 2px;
+}
+
+input[type=text]
+input[type=password]
+input[type=email]
+:focus {
+  outline: none;
+  outline: #d1d1d1 solid 2px;
 }
 
 @font-face {
@@ -38,10 +68,32 @@
   padding-right: 20px;
   background-repeat: repeat;
   font-family: Minecraft;
-  text-align: center;
   color: white;
   height: 150px;
   width: 400px
+}
+
+input[type='submit'],
+label {
+  margin-top: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5px;
+}
+
+.box {
+  justify-content: center;
+  text-align: center;
+  width: 50%;
+  height: 50%;
+  margin: auto;
+  padding: 18px;
+  border-radius: 8px;
+  border: 2.5px solid #fa4b4b;
+  padding-bottom: 2rem;
+  margin-top: 2rem;
 }
 
 .server-selector-field {
@@ -53,12 +105,14 @@
   color: white;
   font-family: Minecraft;
   text-shadow: 1px 1px 0px #141414;
-  border: 3px solid #4f4f4f;
+  border: none;
+  border: 2.5px solid #4f4f4f;
 }
 
 .server-selector-label {
   margin-bottom: 2px;
   font-family: Minecraft;
+  padding-left: 8px;
   text-shadow: 1px 1px 0px #141414;
   color: #4f4f4f;
   padding-right: 140px;
