@@ -1,32 +1,62 @@
 <script lang="ts">
   import "../app.css"
-  import { Clock } from 'lucide-svelte'
+  import { Clock, ChevronDown, Server, UserMinus } from 'lucide-svelte'
   import moment from 'moment'
   import { readable, writable } from 'svelte/store'
+  import { token } from "../hooks/auth"
+  import { onMount } from "svelte";
 
-  export const token = writable<string>()
-  if (typeof localStorage !== 'undefined') {
-    token.subscribe((key) => localStorage.token = key)
-  }
-  
+  let user: any
+  onMount(async () => {
+    const response = await fetch(`http://localhost:9000/account/get`, {
+      method: 'GET', // @ts-ignore
+      headers: {
+        'Authorization': $token
+      }
+    })
+    const payload = await response.json()
+    if (payload.success) {
+      user = payload.user
+    }
+  })
+
   const time = readable("", set => {
     set(moment().format("HH:mm:ss"));
     const interval = setInterval(() => {
 		  set(moment().format("HH:mm:ss"));
-	  }, 1000);
+	  }, 500);
 	  return () => clearInterval(interval);
   })
+
+  function logOut(e) {
+    e.preventDefault()
+    token.set(null)
+    user = null
+  }
 </script>
 
 <nav class="p-2 pr-4 flex flex-row flex-wrap justify-between gap-2">
   <div class="order-0 flex">
     <h1 class="text-xl font-bold"><img alt="Logo" src="/favicon.png" class="mb-2 inline" width="32" height="32"/>&nbsp; <a class="hover:underline" href="/">ultrahardcore.org</a></h1>
   </div>
-  <div class="order-2">
-    <code class="shadow text-xl bg-slate-100 rounded-lg pt-2 pl-2 pr-2 pb-2"><Clock class="inline"/>&nbsp;{$time}</code>
+  <div class="order-2 mt-2">
+    <code class="shadow text-xl bg-slate-100 rounded-lg pt-2 pl-4 pr-4 pb-2"><Clock class="inline"/>&nbsp;{$time}</code>
   </div>
   <div class="order-last flex gap-2">
-    <a href="/register"><button class="shadow bg-slate-100 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">Register</button></a>
-    <a href="/login"><button class="shadow bg-slate-100 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">Login</button></a>
+    {#if user == null}
+      <a href="/register"><button class="shadow bg-slate-100 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">Register</button></a>
+      <a href="/login"><button class="shadow bg-slate-100 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">Login</button></a>
+    {:else}
+      <div class="dropdown inline-block relative">
+        <button id="userDropdownButton" class="mr-4 font-bold inline-flex items-center block shadow mb-2 bg-slate-100 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">{user.username} <ChevronDown class="inline"/></button>
+        <div id="dropdownHover" class="w-auto absolute dropdown-menu z-50 hidden bg-slate-200 divide-y divide-gray-100 hover:rounded rounded-lg shadow">
+          <ul aria-labelledby="userDropdownButton">
+            <li class="block text-sm px-4 py-2 hover:bg-slate-300 rounded-lg"><Server class="inline"/>&nbsp; Your servers</li>
+            <li on:click={logOut} class="block text-sm px-4 py-2 hover:bg-slate-300 rounded-lg"><UserMinus class="inline"/>&nbsp; Log out</li>
+            
+          </ul>
+        </div>
+      </div>
+    {/if}
   </div>
 </nav>

@@ -24,6 +24,48 @@ AccountRouter.route('/').all(authMiddleware, (req, res) => {
   })
 })
 
+/*({
+  createdAt: Date,
+  emailAddress: String,
+  username: String,
+  password: String,
+  id: String,
+  role: String,
+  banned: Boolean,
+  bannedBy: String,
+  bannedAt: String,
+  bannedUntil: Number,
+  servers: Object,
+  verificationToken: String,
+  emailVerified: Boolean
+})*/
+
+AccountRouter.route('/get').get(authMiddleware, async (req, res) => {
+  let session = await Session.findOne({
+    sessionString: req.get(`Authorization`)
+  }).exec()
+  let user = await User.findOne({
+    _id: session!!.userId
+  }).exec()
+  if (user) {
+    return res.json({
+      success: true,
+      user: {
+        createdAt: user.createdAt,
+        emailAddress: user.emailAddress,
+        username: user.username,
+        id: user.id,
+        role: user.role,
+        banned: user.banned,
+        bannedBy: user.bannedBy,
+        bannedAt: user.bannedAt,
+        bannedUntil: user.bannedUntil,
+        servers: user.servers
+      }
+    })
+  } 
+})
+
 AccountRouter.route('/login').post(async (req, res) => {
   let errors = []
   if (!req.body) errors.push('You must supply a body')
@@ -38,8 +80,8 @@ AccountRouter.route('/login').post(async (req, res) => {
   }
   let user = await User.findOne({
     [req.body.username.includes('@')
-      ? 'lowercaseEmail'
-      : 'lowercaseName']: req.body.username.toLowerCase()
+      ? 'emailAddress'
+      : 'username']: req.body.username.toLowerCase()
   }).exec()
   if (!user) {
     return res.status(400).json({

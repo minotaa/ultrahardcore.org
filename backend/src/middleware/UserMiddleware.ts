@@ -60,7 +60,5 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         errors: ['Your session has expired, please log in again'],
       })
     } // @ts-ignore
-    req.user = user // @ts-ignore
-    req.loggedIn = true
     return next()
 }

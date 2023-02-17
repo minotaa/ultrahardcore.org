@@ -2,6 +2,7 @@
   import "../../app.css"
   import { UserPlus } from 'lucide-svelte'
   import Navbar from "../../components/Navbar.svelte"
+    import Footer from "../../components/Footer.svelte";
 
   let email: string 
   let username: string
@@ -62,7 +63,5 @@
       <h2 class="text-center text-md shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4">Check your email for the verificaiton link.</h2>
       {/if}
   </div>
-  <footer class="text-center rounded-lg p-4 items-center justify-between">
-    <span class="text-sm text-gray-400"><a href="/" class="hover:underline">ultrahardcore.org</a> © 2023</span>
-  </footer>
+  <Footer/>
 </main>

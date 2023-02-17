@@ -9,3 +9,7 @@
     font-family: 'Roboto', sans-serif;
   }
 }
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}

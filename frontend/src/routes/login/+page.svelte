@@ -3,6 +3,9 @@
   import { LogIn } from 'lucide-svelte'
   import Navbar from "../../components/Navbar.svelte"
   import { browser } from "$app/environment";
+  import { token } from "../../hooks/auth"
+  import { goto } from "$app/navigation";
+  import Footer from "../../components/Footer.svelte";
 
   let email: string 
   let password: string
@@ -27,9 +30,9 @@
       return
     }
     if (browser) {
-      localStorage.token = payload.session
+      token.set(payload.session)
+      goto('/')
     }
-    console.log(payload)
   }
 </script>
 
@@ -42,8 +45,8 @@
           <h2 class="text-center text-md bg-red-100 shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4"><strong>Errors:</strong> {error.join(', ')}</h2>
         {/if}
         <div class="flex flex-col gap-2">
-          <label for="email" class="font-bold">Email:</label>
-          <input required bind:value={email} class="shadow bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="email" name="email" id="email"/>
+          <label for="email" class="font-bold">Username or Email:</label>
+          <input required bind:value={email} class="shadow bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="email" id="email"/>
           <label for="password" class="font-bold">Password:</label>
           <input required bind:value={password} class="shadow bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="password" name="password" id="password">
           <div class="mt-2 text-center">
@@ -54,7 +57,5 @@
         </div>
       </form>
   </div>
-  <footer class="text-center rounded-lg p-4 items-center justify-between">
-    <span class="text-sm text-gray-400"><a href="/" class="hover:underline">ultrahardcore.org</a> © 2023</span>
-  </footer>
+  <Footer/>
 </main>
