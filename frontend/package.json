@@ -1,25 +1,31 @@
 {
-  "name": "ultrahardcore-frontend",
-  "version": "1.0.0",
-  "description": "Frontend for ultrahardcore.org",
-  "main": "dist/index.js",
-  "repository": "https://github.com/minotaa/ultrahardcore.org",
-  "author": "Minota <jpichardo369@gmail.com>",
-  "license": "GPL-3.0",
-  "private": false,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@types/node": "^18.11.9",
-    "@types/react": "^18.0.24",
-    "next": "^13.0.1",
-    "next-cookie": "^2.8.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "typescript": "^4.8.4"
-  }
+	"name": "frontend",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/kit": "^1.5.0",
+		"autoprefixer": "^10.4.13",
+		"postcss": "^8.4.21",
+		"svelte": "^3.54.0",
+		"svelte-check": "^3.0.1",
+		"tailwindcss": "^3.2.7",
+		"tslib": "^2.4.1",
+		"typescript": "^4.9.3",
+		"vite": "^4.0.0"
+	},
+	"type": "module",
+	"dependencies": {
+		"lucide-svelte": "^0.115.0",
+		"moment": "^2.29.4",
+		"moment-timezone": "^0.5.40",
+		"svelte-feather": "github:novacbn/svelte-feather#0.1.0"
+	}
 }

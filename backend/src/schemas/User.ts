@@ -5,7 +5,6 @@ const UserSchema: Schema = new Schema({
   emailAddress: String,
   username: String,
   password: String,
-  minecraftUuid: String,
   id: String,
   role: String,
   banned: Boolean,
@@ -13,9 +12,7 @@ const UserSchema: Schema = new Schema({
   bannedAt: String,
   bannedUntil: Number,
   servers: Object,
-  minecraftToken: String,
   verificationToken: String,
-  minecraftVerified: Boolean,
   emailVerified: Boolean
 })
 

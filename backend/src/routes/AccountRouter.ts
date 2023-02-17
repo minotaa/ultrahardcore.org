@@ -48,6 +48,13 @@ AccountRouter.route('/login').post(async (req, res) => {
       errors: ['Username or password is invalid'],
     })
   }
+  if (!user.emailVerified) {
+    return res.status(400).json({
+      success: false,
+      message: 'errors',
+      errors: ['You are not email verified yet'],
+    })
+  }
   let passwordValid = await argon2.verify(user.password, req.body.password, {
     type: argon2id,
   })
@@ -93,7 +100,7 @@ AccountRouter.route('/verify').get(async (req, res) => {
   )
   logger.info(`[/accounts] Successfully verified the email ${user.emailAddress} (${user.username}).`)
   await user.save()
-  return res.send('Your email was successfully verified!')
+  return res.redirect(`${process.env.FRONTEND_URL}/login`)
 })
 
 
@@ -155,7 +162,7 @@ AccountRouter.route('/register').post(async (req, res) => {
   await sendEmailVerification(
     user.emailAddress,
     user.username,
-    `${process.env.BASE_URL}/users/verify?token=${user.verificationToken}`
+    `${process.env.BASE_URL}/account/verify?token=${user.verificationToken}`
   )
   logger.info(`[/accounts] Created an account with the email ${user.emailAddress} & username ${user.username}.`)
   await user.save()

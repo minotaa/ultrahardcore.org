@@ -49,7 +49,7 @@ export async function sendEmailVerification(
         'Someone signed up for ultrahardcore.org using your email address.',
       cta_pretext:
         'If this was you, press the link below to activate your account',
-      cta_link: 'https://' + link,
+      cta_link: link,
       cta_text: 'Verify your Account'
     }, 
   })
