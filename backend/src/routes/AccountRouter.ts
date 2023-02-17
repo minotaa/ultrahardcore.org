@@ -195,7 +195,7 @@ AccountRouter.route('/register').post(async (req, res) => {
     minecraftVerified: false,
     verificationToken: crypto.randomBytes(18).toString('hex'),
     minecraftToken: crypto.randomBytes(6).toString('hex'),
-    servers: {}
+    servers: []
   }) 
   res.status(200).json({
     success: true,

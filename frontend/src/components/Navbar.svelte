@@ -17,6 +17,8 @@
     const payload = await response.json()
     if (payload.success) {
       user = payload.user
+    } else {
+      token.set(undefined)
     }
   })
 
@@ -28,7 +30,7 @@
 	  return () => clearInterval(interval);
   })
 
-  function logOut(e) {
+  function logOut(e: Event) {
     e.preventDefault()
     token.set(null)
     user = null
@@ -39,7 +41,7 @@
   <div class="order-0 flex">
     <h1 class="text-xl font-bold"><img alt="Logo" src="/favicon.png" class="mb-2 inline" width="32" height="32"/>&nbsp; <a class="hover:underline" href="/">ultrahardcore.org</a></h1>
   </div>
-  <div class="order-2 mt-2">
+  <div class="order-1 place-items-center mt-2">
     <code class="shadow text-xl bg-slate-100 rounded-lg pt-2 pl-4 pr-4 pb-2"><Clock class="inline"/>&nbsp;{$time}</code>
   </div>
   <div class="order-last flex gap-2">
@@ -51,7 +53,7 @@
         <button id="userDropdownButton" class="mr-4 font-bold inline-flex items-center block shadow mb-2 bg-slate-100 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">{user.username} <ChevronDown class="inline"/></button>
         <div id="dropdownHover" class="w-auto absolute dropdown-menu z-50 hidden bg-slate-200 divide-y divide-gray-100 hover:rounded rounded-lg shadow">
           <ul aria-labelledby="userDropdownButton">
-            <li class="block text-sm px-4 py-2 hover:bg-slate-300 rounded-lg"><Server class="inline"/>&nbsp; Your servers</li>
+            <a href="/servers"><li class="block text-sm px-4 py-2 hover:bg-slate-300 rounded-lg"><Server class="inline"/>&nbsp; Your servers</li></a>
             <li on:click={logOut} class="block text-sm px-4 py-2 hover:bg-slate-300 rounded-lg"><UserMinus class="inline"/>&nbsp; Log out</li>
             
           </ul>
@@ -60,3 +62,4 @@
     {/if}
   </div>
 </nav>
+<hr class="border-0 bg-slate-100 h-px"/>

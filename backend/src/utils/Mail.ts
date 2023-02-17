@@ -3,12 +3,16 @@ import sgMail from '@sendgrid/mail'
 sgMail.setApiKey(process.env.SENDGRID_API_KEY!)
 
 const VERIFY_EMAIL_TEMPLATE = `Hey {name}! 
-Your email has been used to register on <a href="https://ultrahardcore.org">.
+Your email has just been used to register on <a href="https://ultrahardcore.org">.
 If you're that certain somebody, click (or tap) this link on the same device to continue: <a href="{link}">{link}</a>`
 
 const VERIFY_EMAIL_SUCCESS_TEMPLATE = `Hey {username}!
 Your account registration & verification was a success!
 Login at <a href="https://ultrahardcore.org">ultrahardcore.org</a> and get started using your account.
+`
+const CREATE_SERVER_TEMPLATE = `Hey {username}! 
+We have successfully created a server for you to host games on <a href="https://ultrahardcore.org">ultrahardcore.org</a>.
+Unfortunately, you must be verified before you can post, please await verification or contact support for more information.
 `
 
 export async function sendMail(to: string, subject: string, html: string) {
@@ -57,6 +61,10 @@ export async function sendEmailVerification(
  
 export function verifyEmailTemplate(username: string, link: string) {
   return replaceTemplate(VERIFY_EMAIL_TEMPLATE, { username, link })
+}
+
+export function createServerTemplate(username: string) {
+  return replaceTemplate(CREATE_SERVER_TEMPLATE, { username })
 }
 
 export function verifyEmailSuccessTemplate(username: string) {

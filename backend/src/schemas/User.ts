@@ -11,9 +11,16 @@ const UserSchema: Schema = new Schema({
   bannedBy: String,
   bannedAt: String,
   bannedUntil: Number,
-  servers: Object,
+  servers: Array,
   verificationToken: String,
   emailVerified: Boolean
 })
+
+export interface UserServer {
+  joinedAt: Date,
+  role: String,
+  memberId: String,
+  serverId: String
+}
 
 export default mongoose.model('user', UserSchema)

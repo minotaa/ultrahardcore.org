@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { RootRouter, AccountRouter } from './routes'
+import { RootRouter, AccountRouter, ServerRouter } from './routes'
 import express from 'express'
 import kleur from 'kleur'
 import cors from 'cors'
@@ -29,6 +29,7 @@ new db()
 
 app.use(cors())
 app.use('/', RootRouter)
+app.use('/server', ServerRouter)
 app.use('/account', AccountRouter)
 
 app.listen(process.env.SERVER_PORT, () => logger.info(`Listening on port ${process.env.SERVER_PORT}.`))

@@ -55,7 +55,7 @@
           </div>
           <button type="submit" class="bg-green-400 text-white pt-2 pb-2 mt-2 rounded-lg font-bold"><LogIn class="inline mb-1"/> Log in</button>
         </div>
+        <Footer/>
       </form>
   </div>
-  <Footer/>
 </main>

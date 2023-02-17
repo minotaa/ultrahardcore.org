@@ -62,6 +62,6 @@
       {:else}
       <h2 class="text-center text-md shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4">Check your email for the verificaiton link.</h2>
       {/if}
+      <Footer/>
   </div>
-  <Footer/>
 </main>
