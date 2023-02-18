@@ -39,34 +39,34 @@
 
 <nav class="p-2 pr-4 flex flex-row flex-wrap justify-between gap-2">
   <div class="order-0 flex">
-    <h1 class="text-xl font-bold"><img alt="Logo" src="/favicon.png" class="mb-2 inline" width="32" height="32"/>&nbsp; <a class="hover:underline" href="/">ultrahardcore.org</a></h1>
+    <h1 class="text-xl font-bold"><img alt="Logo" src="/favicon.png" class="mb-2 inline" width="32" height="32"/>&nbsp; <a class="dark:text-white hover:underline" href="/">ultrahardcore.org</a></h1>
   </div>
   <div class="order-last flex gap-2">
-    <code class="shadow mb-4 text-xl bg-slate-100 rounded-lg pt-2 pl-4 pr-4 pb-2"><Clock class="inline"/>&nbsp;{$time}</code>
+    <code class="shadow mb-4 text-xl bg-slate-100 dark:bg-slate-800 dark:text-white rounded-lg pt-2 pl-4 pr-4 pb-1"><Clock class="mb-1 inline"/>&nbsp;{$time}</code>
     {#if user == null}
-      <a href="/register"><button class="shadow bg-slate-100 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">Register</button></a>
-      <a href="/login"><button class="shadow bg-slate-100 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">Login</button></a>
+      <a href="/register"><button class="shadow dark:bg-slate-800 dark:hover:bg-slate-900 dark:text-white bg-slate-100 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">Register</button></a>
+      <a href="/login"><button class="shadow dark:bg-slate-800 dark:hover:bg-slate-900 dark:text-white bg-slate-100 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">Login</button></a>
     {:else}
       {#if user.role == "admin"}
         <div class="dropdown inline-block relative">
-          <button id="userDropdownButton" class="font-bold inline-flex items-center block shadow mb-2 bg-slate-100 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg"><Wrench class="inline"/>&nbsp;<ChevronDown class="inline"/></button>
-          <div id="dropdownHover" class="w-auto absolute dropdown-menu z-50 hidden w-40 bg-slate-200 divide-y divide-gray-100 hover:rounded rounded-lg shadow">
+          <button id="userDropdownButton" class="dark:bg-slate-800 dark:text-white font-bold inline-flex items-center block shadow mb-2 bg-slate-100 dark:hover:bg-slate-900 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg"><Wrench class="inline"/>&nbsp;<ChevronDown class="inline"/></button>
+          <div id="dropdownHover" class="w-auto absolute dropdown-menu z-50 hidden w-40 dark:bg-slate-700 bg-slate-200 divide-y divide-gray-100 rounded shadow">
             <ul aria-labelledby="userDropdownButton">
-              <a href="/servers/approve"><li class="block text-sm px-4 py-2 hover:bg-slate-300 rounded-lg"><ServerCrash class="inline"/>&nbsp; Approve servers</li></a>
+              <a href="/servers/approve"><li class="block text-sm px-4 py-2 dark:bg-slate-700 dark:hover:bg-slate-800 hover:bg-slate-300 rounded-lg"><ServerCrash class="inline"/>&nbsp; Approve servers</li></a>
             </ul>
           </div>
         </div>
       {/if}
       <div class="dropdown inline-block relative">
-        <button id="userDropdownButton" class="mr-4 font-bold inline-flex items-center block shadow mb-2 bg-slate-100 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">{user.username} <ChevronDown class="inline"/></button>
-        <div id="dropdownHover" class="w-auto absolute dropdown-menu z-50 hidden bg-slate-200 divide-y divide-gray-100 hover:rounded rounded-lg shadow">
+        <button id="userDropdownButton" class="dark:bg-slate-800 dark:text-white mr-4 font-bold inline-flex items-center block shadow mb-2 bg-slate-100 dark:hover:bg-slate-900 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">{user.username} <ChevronDown class="inline"/></button>
+        <div id="dropdownHover" class="w-auto absolute dark:bg-slate-700 dropdown-menu z-50 hidden bg-slate-200 divide-y divide-gray-100 rounded shadow">
           <ul aria-labelledby="userDropdownButton">
-            <a href="/servers"><li class="block text-sm px-4 py-2 hover:bg-slate-300 rounded-lg"><Server class="inline"/>&nbsp; Your servers</li></a>
-            <li on:click={logOut} class="block text-sm px-4 py-2 hover:bg-slate-300 rounded-lg"><UserMinus class="inline"/>&nbsp; Log out</li>
+            <a href="/servers"><li class="block text-sm px-4 py-2 dark:hover:bg-slate-800 dark:bg-slate-700 hover:bg-slate-300 rounded-lg"><Server class="inline"/>&nbsp; Your servers</li></a>
+            <li on:click={logOut} class="block text-sm px-4 py-2 dark:hover:bg-slate-800 hover:bg-slate-300 rounded-lg"><UserMinus class="inline"/>&nbsp; Log out</li>
           </ul>
         </div>
       </div>
     {/if}
   </div>
 </nav>
-<hr class="border-0 bg-slate-100 h-px"/>
+<hr class="border-0 dark:bg-zinc-800 bg-slate-100 mb-2 h-px"/>
