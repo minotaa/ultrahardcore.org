@@ -6,21 +6,61 @@ import Server from "../schemas/Server";
 import Session from "../schemas/Session";
 import User, { UserServer } from "../schemas/User";
 import { randomUUID } from "crypto";
-import { sendMail } from "../utils/Mail";
+import { createServerTemplate, sendMail } from "../utils/Mail";
 
 const ServerRouter = Router()
 ServerRouter.use(bodyParser.json())
 
 const ADDRESS_REGEX = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
 
+ServerRouter.route('/getApprovableServers').get(authMiddleware, async(req, res) => {
+  let session = await Session.findOne({
+    sessionString: req.get(`Authorization`)
+  }).exec()
+  let user = await User.findOne({
+    _id: session!!.userId
+  }).exec()
+  if (user!!.role != "admin") {
+    return res.json({
+      success: false,
+      errors: ['You are not an admin']
+    })
+  }
+  let servers = await Server.find({
+    verified: false
+  })
+  return res.json({
+    success: true,
+    servers: servers
+  })
+})
+
+ServerRouter.route('/get').get(authMiddleware, async (req, res) => {
+  if (!req.query.server) return res.send('You did not provide a valid server ID.')
+  let server = await Server.findOne({
+    id: req.query.server
+  }).exec()
+  if (server) {
+    return res.json({
+      success: true,
+      server: server
+    })
+  } else {
+    return res.status(404).json({
+      success: false,
+      errors: ['Could not find server']
+    })
+  }
+})
+
 ServerRouter.route('/create').post(authMiddleware, async (req, res) => {
   let errors = []
   if (!req.body.name) errors.push('You must provide a name')
   if (!req.body.ip && !req.body.address) errors.push('You must provide an address or an IP')
-  if (!req.body.address.matches(ADDRESS_REGEX)) errors.push('You must provide a valid IP Address for your server')
+  if (req.body.address && !req.body.address.matches(ADDRESS_REGEX)) errors.push('You must provide a valid IP Address for your server')
   if (!req.body.region) errors.push('You must provide a server region')
   if (!req.body.location) errors.push('You must provide a server location')
-  if (req.body.ip.length < 6) errors.push('Your server domain must be greater than 5 characters')
+  if (req.body.ip && req.body.ip.length < 6) errors.push('Your server domain must be greater than 5 characters')
   if (errors.length > 0) {
     return res.status(400).json({
       success: false,
@@ -59,8 +99,8 @@ ServerRouter.route('/create').post(authMiddleware, async (req, res) => {
     })
     await sendMail(
       user.emailAddress, 
-      'Your email was successfully verified, thank you for using our service!',
-      (user.username)
+      'Successfully created server!',
+      createServerTemplate(user.username)
     )
     logger.info(`[/servers] Successfully created the server ${server.id} for ${user.username}.`)
     await server.save()

@@ -2,7 +2,10 @@
   import "../../app.css"
   import { UserPlus } from 'lucide-svelte'
   import Navbar from "../../components/Navbar.svelte"
-    import Footer from "../../components/Footer.svelte";
+  import Footer from "../../components/Footer.svelte";
+  import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
+  import { token } from "../../hooks/auth";
 
   let email: string 
   let username: string
@@ -34,6 +37,26 @@
       success = true
     }
   }
+
+  let user: any
+  onMount(async () => {
+    const response = await fetch(`http://localhost:9000/account/get`, {
+      method: 'GET', // @ts-ignore
+      headers: {
+        'Authorization': $token
+      }
+    })
+    const payload = await response.json()
+    if (payload.success) {
+      user = payload.user
+    } else {
+      token.set(undefined)
+      user = null
+    }
+    if (user) {
+      goto('/')
+    }
+  })
 </script>
 
 <main class="pt-4 pl-4">
@@ -60,7 +83,7 @@
           </div>
         </form>
       {:else}
-      <h2 class="text-center text-md shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4">Check your email for the verificaiton link.</h2>
+        <h2 class="text-center text-md shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4">Check your email for the verification link.</h2>
       {/if}
       <Footer/>
   </div>

@@ -6,6 +6,27 @@
   import { token } from "../../hooks/auth"
   import { goto } from "$app/navigation";
   import Footer from "../../components/Footer.svelte";
+  import { onMount } from "svelte";
+
+  let user: any
+  onMount(async () => {
+    const response = await fetch(`http://localhost:9000/account/get`, {
+      method: 'GET', // @ts-ignore
+      headers: {
+        'Authorization': $token
+      }
+    })
+    const payload = await response.json()
+    if (payload.success) {
+      user = payload.user
+    } else {
+      token.set(undefined)
+      user = null
+    }
+    if (user) {
+      goto('/')
+    }
+  })
 
   let email: string 
   let password: string

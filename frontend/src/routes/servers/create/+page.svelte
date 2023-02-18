@@ -2,7 +2,8 @@
   import "../../../app.css";
   import Navbar from "../../../components/Navbar.svelte";
   import Footer from "../../../components/Footer.svelte";
-  
+  import { HardDrive } from "lucide-svelte";
+
   import { token } from "../../../hooks/auth"
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
@@ -26,13 +27,77 @@
       goto('/')
     }
   })
+
+  let serverName: string
+  let serverIp: string
+  let serverAddress: string
+  let serverLocation: string
+  let success: boolean
+  let error: string[]
+  let serverRegion: string
+  
+  async function handleSubmit(e: Event) {
+    e.preventDefault()
+    
+    const res = await fetch(`http://localhost:9000/server/create`, {
+      method: 'POST', // @ts-ignore
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': $token
+      },
+      body: JSON.stringify({
+        name: serverName,
+        ip: serverIp,
+        address: serverAddress,
+        location: serverLocation,
+        region: serverRegion
+      })
+    })
+    const payload = await res.json()
+    if (!payload.success) {
+      error = payload.errors 
+    }
+    if (payload.success) {
+      success = true
+    }
+  }
+
 </script>
 
 <main class="pt-4 pl-4">
   <Navbar/>
   <div class="container pl-8">
     <h1 class="pt-6 font-bold text-2xl">Create Server</h1>
-    
+    {#if !success}
+      {#if error != null}
+        <h2 class="mt-2 text-center text-md bg-red-100 shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4"><strong>Errors:</strong> {error.join(', ')}</h2>
+      {/if}
+      <form on:submit={handleSubmit}>
+        <div class="flex flex-col gap-2 justify-center">
+          <label for="serverName" class="font-bold mt-6">Server Name:</label>
+          <input required bind:value={serverName} placeholder="for example: applejuice" class="shadow bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverName" id="serverName"/>
+          <label for="serverIp" class="font-bold mt-4">IP Address:</label>
+          <input bind:value={serverIp} placeholder="for example: applejuice.bar" class="shadow bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverIp" id="serverIp"/>
+          <label for="serverAddress" class="font-bold mt-4">Server Address:</label>
+          <input bind:value={serverAddress} placeholder="if you do not have a domain, use this field" class="shadow bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverAddress" id="serverAddress"/>
+          <label for="serverLocation" class="font-bold mt-4">Server Region:</label>
+          <select bind:value={serverRegion} required name="serverRegion" id="serverRegion" class="shadow bg-slate-100 pt-2 pb-2 w-96 pl-2">
+            <option value="na">North America</option>
+            <option value="eu">Europe</option>
+            <option value="au">Oceania</option>
+            <option value="as">Asia</option>
+            <option value="sa">South America</option>
+            <option value="af">Africa</option>
+          </select>
+          <label for="serverLocation" class="font-bold mt-4">Server Location:</label>
+          <input required bind:value={serverLocation} placeholder="for example: Montreal, Canada" class="shadow bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverLocation" id="serverLocation"/>
+          <button type="submit" class="bg-green-400 text-white pt-2 pb-2 mt-6 rounded-lg font-bold w-96"><HardDrive class="inline mb-1"/> Create Server</button>
+
+        </div>
+      </form>
+    {:else}
+      <h2 class="text-center text-md shadow rounded-lg mt-4 pt-4 pb-4 w-80 pr-8 pl-8 mb-4">Successfully created the server, please wait a Staff member to verify your server.<br/><br/><a href="/servers" class="text-sky-500 hover:underline">Go back to servers page.</a></h2>
+    {/if}
     <Footer/>
   </div>
 </main>

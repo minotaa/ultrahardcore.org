@@ -13,7 +13,9 @@ const ServerSchema: Schema = new Schema({
   owner: String,
   id: String,
   invited: Array,
-  verified: Boolean
+  verified: Boolean,
+  discordUrl: String,
+  websiteUrl: String
 })
 
 export default mongoose.model('server', ServerSchema)

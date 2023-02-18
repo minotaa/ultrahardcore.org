@@ -66,6 +66,40 @@ AccountRouter.route('/get').get(authMiddleware, async (req, res) => {
   } 
 })
 
+AccountRouter.route('/getId').get(authMiddleware, async (req, res) => {
+  if (!req.query.id) {
+    return res.status(400).json({
+      success: false,
+      errors: ['You need to provide a user']
+    })
+  }
+  let user = await User.findOne({
+    _id: req.query.id
+  }).exec()
+  if (user) {
+    return res.json({
+      success: true,
+      user: {
+        createdAt: user.createdAt,
+        emailAddress: user.emailAddress,
+        username: user.username,
+        id: user.id,
+        role: user.role,
+        banned: user.banned,
+        bannedBy: user.bannedBy,
+        bannedAt: user.bannedAt,
+        bannedUntil: user.bannedUntil,
+        servers: user.servers
+      }
+    })
+  } else {
+    return res.status(400).json({
+      success: false,
+      errors: ['Invalid user']
+    })
+  }
+})
+
 AccountRouter.route('/login').post(async (req, res) => {
   let errors = []
   if (!req.body) errors.push('You must supply a body')

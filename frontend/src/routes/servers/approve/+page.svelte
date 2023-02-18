@@ -1,47 +1,45 @@
 <script lang="ts">
-  import "../../app.css";
-  import Navbar from "../../components/Navbar.svelte";
-  import Footer from "../../components/Footer.svelte";
-  import moment from "moment"
-  import { XCircle, CheckCircle } from "lucide-svelte";
-  
-  import { token } from "../../hooks/auth"
+  import "../../../app.css"
+  import Navbar from "../../../components/Navbar.svelte";
+  import Footer from "../../../components/Footer.svelte";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
+  import { token } from "../../../hooks/auth";
+  import moment from "moment";
+    import { CheckCircle, XCircle } from "lucide-svelte";
 
+  let servers: object[]
   let user: any
-  let servers: string[] = []
-  let list: object[] = []
   let loadedYet = false
   onMount(async () => {
-    const response = await fetch(`http://localhost:9000/account/get`, {
+    let response = await fetch(`http://localhost:9000/account/get`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
       }
     })
-    const payload = await response.json()
+    let payload = await response.json()
     if (payload.success) {
       user = payload.user
-      servers = payload.user.servers
-      for await (const server of servers) {
-        console.log(server)
-        const response = await fetch(`http://localhost:9000/server/get?server=${server}`, {
-          method: 'GET', // @ts-ignore
-          headers: {
-            'Authorization': $token
-          }
-        })
-        const payload = await response.json()
-        if (payload.success) {
-          list.push(payload.server)
-        }
+      console.log(user)
+      if (user.role != "admin") {
+        goto('/')
       }
-      loadedYet = true
     } else {
       token.set(undefined)
-      goto('/')
+      user = null
     }
+    response = await fetch(`http://localhost:9000/server/getApprovableServers`, {
+      method: 'GET', // @ts-ignore
+      headers: {
+        'Authorization': $token
+      }
+    })
+    payload = await response.json()
+    if (payload.success) {
+      servers = payload.servers
+    }
+    loadedYet = true
   })
 
   function getRegion(region: string) {
@@ -74,13 +72,13 @@
 <main class="pt-4 pl-4">
   <Navbar/>
   <div class="container pl-8">
-    <h1 class="pt-6 font-bold text-2xl">Your Servers</h1>
+    <h1 class="pt-6 font-bold text-2xl">Approve Servers</h1>
     {#if loadedYet}
-      {#if list && list.length === 0}
-      <h2 class="pt-2 text-xl text-gray-500">You are not in any servers. Maybe <a href="/servers/create" class="hover:underline text-sky-500">create one?</a></h2>
+      {#if servers.length == 0}
+        <h2 class="pt-2 text-xl text-gray-500">No servers to approve yet.</h2>
       {:else}
-        <ul class="flex flex-row pt-4 gap-4">
-          {#each list as server}
+        {#each servers as server}
+          <ul class="flex flex-row pt-4 gap-4">
             <li>
               <div class="shadow rounded-lg bg-slate-100 pt-6 pb-6 pl-4 pr-16">
                 <h1 class="font-bold text-xl">{server.name}</h1>
@@ -99,15 +97,14 @@
                 {:catch error}
                   <h2 class="text-md">Owner: <strong>Failed...</strong></h2>
                 {/await }
-                {#if server.verified == false}
-                  <h2 class="text-md mt-2 text-red-500"><XCircle class="inline mb-1"/> Not verified yet</h2>
-                {:else}
-                <h2 class="text-md text-green-500"><XCircle class="inline mb-1"/> Not verified yet</h2>
-                {/if}
+                <div class="flex flex-row gap-4">
+                  <button class="bg-red-400 pl-4 pr-4 text-white pt-2 pb-2 mt-2 rounded-lg font-bold"><XCircle class="inline mb-1"/> Deny</button>
+                  <button class="bg-green-400 pl-4 pr-4 text-white pt-2 pb-2 mt-2 rounded-lg font-bold"><CheckCircle class="inline mb-1"/> Approve</button>
+                </div>
               </div>
             </li>
-          {/each}
-        </ul>
+          </ul>
+        {/each}
       {/if}
     {:else}
       <h2 class="pt-2 text-xl text-gray-500">Fetching servers...</h2>
