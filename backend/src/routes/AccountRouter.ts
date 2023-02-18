@@ -55,6 +55,7 @@ AccountRouter.route('/get').get(authMiddleware, async (req, res) => {
         emailAddress: user.emailAddress,
         username: user.username,
         id: user.id,
+        mId: user._id,
         role: user.role,
         banned: user.banned,
         bannedBy: user.bannedBy,

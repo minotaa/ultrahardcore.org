@@ -3,15 +3,30 @@
   import Navbar from "../../components/Navbar.svelte";
   import Footer from "../../components/Footer.svelte";
   import moment from "moment"
-  import { XCircle, CheckCircle, PlusCircle } from "lucide-svelte";
+  import { XCircle, CheckCircle, PlusCircle, CheckCircle2 } from "lucide-svelte";
   
   import { token } from "../../hooks/auth"
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
 
+  interface Server {
+    name: string,
+    ip: string,
+    address: string,
+    location: string, 
+    region: string,
+    scenarioDescriptions: string,
+    members: object[],
+    createdAt: Date,
+    owner: string,
+    id: string,
+    invited: string[],
+    verified: boolean
+  }
+
   let user: any
   let servers: string[] = []
-  let list: object[] = []
+  let list: Server[] = []
   let loadedYet = false
   onMount(async () => {
     const response = await fetch(`http://localhost:9000/account/get`, {
@@ -58,6 +73,18 @@
     }
   }
 
+  async function getMembership(userId: string, serverId: string) {
+    const response = await fetch(`http://localhost:9000/server/getMember?user=${userId}&server=${serverId}`, {
+      method: 'GET', // @ts-ignore
+      headers: {
+        'Authorization': $token
+      }
+    })
+    const payload = await response.json()
+    if (payload.success) return payload.member
+    else return null
+  }
+
   async function getOwner(id: string) {
     const response = await fetch(`http://localhost:9000/account/getId?id=${id}`, {
       method: 'GET', // @ts-ignore
@@ -100,8 +127,19 @@
               {#if server.verified == false}
                 <h2 class="text-md mt-2 text-red-500 dark:text-red-600"><XCircle class="inline mb-1"/> Not verified yet</h2>
               {:else}
-              <h2 class="text-md text-green-500 dark:text-green-600"><XCircle class="inline mb-1"/> Not verified yet</h2>
+                <h2 class="text-md mt-2 text-green-500 dark:text-green-600"><CheckCircle2 class="inline mb-1"/> Verified</h2>
               {/if}
+              {#await getMembership(user.mId, server.id)}
+                <h2 class="text-sm dark:text-white">Fetching membership details...</h2>
+              {:then member}
+                {#if member.role == "owner" || member.role == "admin"}
+                  <h2 class="mt-2 text-sm dark:text-white"><a href="/servers/manage/{server.id}" class="text-sky-500 hover:underline">Manage</a> | <a href="/server/{server.id}" class="text-sky-500 hover:underline">View</a></h2>
+                {:else}
+                  <h2 class="mt-2 text-sm dark:text-white"><a href="/server/{server.id}" class="text-sky-500 hover:underline">View</a></h2>
+                {/if}
+              {:catch error}
+                <h2 class="mt-2 text-sm dark:text-white">Fetching membership details: <strong>Failed...</strong></h2>
+              {/await}
             </div>
           </li>
         {/each}

@@ -16,7 +16,7 @@ const UserSchema: Schema = new Schema({
   emailVerified: Boolean
 })
 
-export interface UserServer {
+export interface Member {
   joinedAt: Date,
   role: String,
   memberId: String,

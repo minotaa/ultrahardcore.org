@@ -15,7 +15,11 @@ const ServerSchema: Schema = new Schema({
   invited: Array,
   verified: Boolean,
   discordUrl: String,
-  websiteUrl: String
+  twitterUrl: String,
+  websiteUrl: String,
+  extraLinks: Array,
+  configOptions: Array,
+  customizableRules: Array
 })
 
 export default mongoose.model('server', ServerSchema)

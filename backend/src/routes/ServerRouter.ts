@@ -4,9 +4,10 @@ import { logger } from "../index";
 import { authMiddleware } from "../middleware/UserMiddleware";
 import Server from "../schemas/Server";
 import Session from "../schemas/Session";
-import User, { UserServer } from "../schemas/User";
+import User, { Member } from "../schemas/User";
 import { randomUUID } from "crypto";
 import { approvedServerTemplate, createServerTemplate, deniedServerTemplate, sendMail } from "../utils/Mail";
+import { ObjectId } from "mongoose";
 
 const ServerRouter = Router()
 ServerRouter.use(bodyParser.json())
@@ -35,6 +36,52 @@ ServerRouter.route('/getApprovableServers').get(authMiddleware, async(req, res) 
   })
 })
 
+ServerRouter.route('/getMember').get(authMiddleware, async(req, res) => {
+  if (!req.query.server || !req.query.user) { 
+    return res.status(403).json({
+      success: false,
+      errors: ['Please provide a server ID and user ID.']
+    }) 
+  }
+  let user = await User.findOne({
+    _id: req.query.user
+  }).exec()
+  let server = await Server.findOne({
+    id: req.query.server
+  })
+  if (!server || !user) {
+    return res.status(404).json({
+      success: false,
+      errors: ['You did not provide a valid server ID or user ID.']
+    })
+  }
+  for (const member of server.members) {
+    if ((member as Member).memberId == (user._id as ObjectId).toString()) {
+      return res.json({
+        success: true,
+        member: member,
+        user: {
+          createdAt: user.createdAt,
+          emailAddress: user.emailAddress,
+          username: user.username,
+          id: user.id,
+          mId: user._id,
+          role: user.role,
+          banned: user.banned,
+          bannedBy: user.bannedBy,
+          bannedAt: user.bannedAt,
+          bannedUntil: user.bannedUntil,
+          servers: user.servers
+        }
+      })
+    }
+  }
+  return res.json({
+    success: false,
+    errors: ['Member doesn\'t seem to be apart of that server.']
+  })
+})
+
 ServerRouter.route('/deny').post(authMiddleware, async(req, res) => {
   let session = await Session.findOne({
     sessionString: req.get(`Authorization`)
@@ -48,7 +95,10 @@ ServerRouter.route('/deny').post(authMiddleware, async(req, res) => {
       errors: ['You are not an admin']
     })
   }
-  if (!req.query.server) return res.send('You did not provide a valid server ID.')
+  if (!req.query.server) return res.json({
+    success: false,
+    errors: ['You did not provide a valid server ID.']
+  })
   let server = await Server.findOne({
     id: req.query.server
   }).exec()
@@ -70,8 +120,7 @@ ServerRouter.route('/deny').post(authMiddleware, async(req, res) => {
   }
   await server.remove()
   return res.json({
-    success: true,
-    server: server
+    success: true
   })
 })
 
@@ -162,7 +211,7 @@ ServerRouter.route('/create').post(authMiddleware, async (req, res) => {
       joinedAt: new Date(),
       serverId: id,
       role: "owner"
-    } as UserServer 
+    } as Member 
     user.servers.push(id)
     await user.save()
     let server = new Server({

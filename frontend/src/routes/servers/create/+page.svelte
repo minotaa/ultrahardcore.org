@@ -75,7 +75,7 @@
         <label for="serverName" class="font-bold mt-6 dark:text-white">Server Name:</label>
         <input required bind:value={serverName} placeholder="for example: applejuice" class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverName" id="serverName"/>
         <label for="serverIp" class="font-bold mt-4 dark:text-white">IP Address:</label>
-        <input bind:value={serverIp} placeholder="for example: applejuice.bar" class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverIp" id="serverIp"/>
+        <input bind:value={serverIp} placeholder="this must be your Hub IP, not a direct IP" class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverIp" id="serverIp"/>
         <label for="serverAddress" class="font-bold mt-4 dark:text-white">Server Address:</label>
         <input bind:value={serverAddress} placeholder="if you do not have a domain, use this field" class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverAddress" id="serverAddress"/>
         <label for="serverLocation" class="font-bold mt-4 dark:text-white">Server Region:</label>
