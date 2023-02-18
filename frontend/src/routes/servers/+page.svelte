@@ -71,47 +71,44 @@
   }
 </script>
 
-<main class="pt-4 pl-4">
-  <Navbar/>
-  <div class="container pl-8">
-    <h1 class="pt-6 font-bold text-2xl dark:text-white">Your Servers&nbsp; <a href="/servers/create" class="inline bg-green-400 dark:bg-green-500 text-md text-white pl-2 pr-2 pt-1 pb-1 mt-6 rounded-lg"><button><PlusCircle class="mb-1 inline"/> Create</button></a></h1>
-    {#if loadedYet}
-      {#if list && list.length === 0}
-      <h2 class="pt-2 text-xl text-gray-500">You are not in any servers. Maybe <a href="/servers/create" class="hover:underline text-sky-500">create one?</a></h2>
-      {:else}
-        <ul class="flex flex-row pt-4 gap-4">
-          {#each list as server}
-            <li>
-              <div class="shadow dark:bg-zinc-800 rounded-lg bg-slate-100 pt-6 pb-6 pl-4 pr-16">
-                <h1 class="font-bold dark:text-white text-xl">{server.name}</h1>
-                {#if server.ip != null}
-                  <h2 class="text-md dark:text-white mt-2">IP: <code>{server.ip}</code></h2>
-                {:else}
-                  <h2 class="text-md dark:text-white">IP: <code>{server.address}</code></h2>
-                {/if}
-                <h2 class="text-md dark:text-white">Location: <strong>{server.location}</strong></h2>
-                <h2 class="text-md dark:text-white">Region: <strong>{getRegion(server.region)}</strong></h2>
-                <h2 class="text-md dark:text-white">Created: <strong>{moment(server.createdAt).fromNow()}</strong></h2>
-                {#await getOwner(server.owner)}
-                  <h2 class="text-md dark:text-white">Owner: <strong>Fetching...</strong></h2>
-                {:then owner}
-                  <h2 class="text-md dark:text-white">Owner: <strong>{owner.username}</strong></h2>
-                {:catch error}
-                  <h2 class="text-md dark:text-white">Owner: <strong>Failed...</strong></h2>
-                {/await }
-                {#if server.verified == false}
-                  <h2 class="text-md mt-2 text-red-500 dark:text-red-600"><XCircle class="inline mb-1"/> Not verified yet</h2>
-                {:else}
-                <h2 class="text-md text-green-500 dark:text-green-600"><XCircle class="inline mb-1"/> Not verified yet</h2>
-                {/if}
-              </div>
-            </li>
-          {/each}
-        </ul>
-      {/if}
+<div class="container pl-8">
+  <h1 class="pt-6 font-bold text-2xl dark:text-white">Your Servers&nbsp; <a href="/servers/create" class="inline bg-green-400 dark:bg-green-500 text-md text-white pl-2 pr-2 pt-1 pb-1 mt-6 rounded-lg"><button><PlusCircle class="mb-1 inline"/> Create</button></a></h1>
+  {#if loadedYet}
+    {#if list && list.length === 0}
+    <h2 class="pt-2 text-xl text-gray-500">You are not in any servers. Maybe <a href="/servers/create" class="hover:underline text-sky-500">create one?</a></h2>
     {:else}
-      <h2 class="pt-2 text-xl text-gray-500 dark:text-gray-100">Fetching servers...</h2>
+      <ul class="flex flex-row pt-4 gap-4">
+        {#each list as server}
+          <li>
+            <div class="shadow dark:bg-zinc-800 rounded-lg bg-slate-100 pt-6 pb-6 pl-6 pr-16">
+              <h1 class="font-bold dark:text-white text-xl">{server.name}</h1>
+              {#if server.ip != null}
+                <h2 class="text-md dark:text-white mt-2">IP: <code>{server.ip}</code></h2>
+              {:else}
+                <h2 class="text-md dark:text-white">IP: <code>{server.address}</code></h2>
+              {/if}
+              <h2 class="text-md dark:text-white">Location: <strong>{server.location}</strong></h2>
+              <h2 class="text-md dark:text-white">Region: <strong>{getRegion(server.region)}</strong></h2>
+              <h2 class="text-md dark:text-white">Created: <strong>{moment(server.createdAt).fromNow()}</strong></h2>
+              {#await getOwner(server.owner)}
+                <h2 class="text-md dark:text-white">Owner: <strong>Fetching...</strong></h2>
+              {:then owner}
+                <h2 class="text-md dark:text-white">Owner: <strong>{owner.username}</strong></h2>
+              {:catch error}
+                <h2 class="text-md dark:text-white">Owner: <strong>Failed...</strong></h2>
+              {/await }
+              {#if server.verified == false}
+                <h2 class="text-md mt-2 text-red-500 dark:text-red-600"><XCircle class="inline mb-1"/> Not verified yet</h2>
+              {:else}
+              <h2 class="text-md text-green-500 dark:text-green-600"><XCircle class="inline mb-1"/> Not verified yet</h2>
+              {/if}
+            </div>
+          </li>
+        {/each}
+      </ul>
     {/if}
-    <Footer/>
-  </div>
-</main>
+  {:else}
+    <h2 class="pt-2 text-xl text-gray-500 dark:text-gray-100">Fetching servers...</h2>
+  {/if}
+  <Footer/>
+</div>

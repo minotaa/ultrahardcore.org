@@ -6,9 +6,25 @@
   import { goto } from "$app/navigation";
   import { token } from "../../../hooks/auth";
   import moment from "moment";
-    import { CheckCircle, XCircle } from "lucide-svelte";
+  import { toast } from '@zerodevx/svelte-toast'
+  import { CheckCircle2, XCircle } from "lucide-svelte";
 
-  let servers: object[]
+  interface Server {
+    name: string,
+    ip: string,
+    address: string,
+    location: string, 
+    region: string,
+    scenarioDescriptions: string,
+    members: object[],
+    createdAt: Date,
+    owner: string,
+    id: string,
+    invited: string[],
+    verified: boolean
+  }
+
+  let servers: Server[]
   let user: any
   let loadedYet = false
   onMount(async () => {
@@ -42,6 +58,21 @@
     loadedYet = true
   })
 
+  async function getServers() {
+    loadedYet = false
+    let response = await fetch(`http://localhost:9000/server/getApprovableServers`, {
+      method: 'GET', // @ts-ignore
+      headers: {
+        'Authorization': $token
+      }
+    })
+    let payload = await response.json()
+    if (payload.success) {
+      servers = payload.servers
+    }
+    loadedYet = true
+  }
+
   function getRegion(region: string) {
     if (region == "na") {
       return "North America"
@@ -67,48 +98,68 @@
     if (payload.success) return payload.user
     else return null
   }
+
+  async function approve(server: Server) {
+    await fetch(`http://localhost:9000/server/approve?server=${server.id}`, {
+      method: 'POST', // @ts-ignore
+      headers: {
+        'Authorization': $token
+      }
+    })
+    getServers()
+    toast.push(`Successfully approved ${server.name}!`)
+    
+  }
+
+  async function deny(server: Server) {
+    await fetch(`http://localhost:9000/server/deny?server=${server.id}`, {
+      method: 'POST', // @ts-ignore
+      headers: {
+        'Authorization': $token
+      }
+    })
+    getServers()
+    toast.push(`Successfully denied ${server.name}!`)
+  }
 </script>
 
-<main class="pt-4 pl-4">
-  <Navbar/>
-  <div class="container pl-8">
-    <h1 class="pt-6 font-bold text-2xl">Approve Servers</h1>
-    {#if loadedYet}
-      {#if servers.length == 0}
-        <h2 class="pt-2 text-xl text-gray-500">No servers to approve yet.</h2>
-      {:else}
-        {#each servers as server}
-          <ul class="flex flex-row pt-4 gap-4">
-            <li>
-              <div class="shadow rounded-lg bg-slate-100 pt-6 pb-6 pl-4 pr-16">
-                <h1 class="font-bold text-xl">{server.name}</h1>
-                {#if server.ip != null}
-                  <h2 class="text-md mt-2">IP: <code>{server.ip}</code></h2>
-                {:else}
-                  <h2 class="text-md">IP: <code>{server.address}</code></h2>
-                {/if}
-                <h2 class="text-md">Location: <strong>{server.location}</strong></h2>
-                <h2 class="text-md">Region: <strong>{getRegion(server.region)}</strong></h2>
-                <h2 class="text-md">Created: <strong>{moment(server.createdAt).fromNow()}</strong></h2>
-                {#await getOwner(server.owner)}
-                  <h2 class="text-md">Owner: <strong>Fetching...</strong></h2>
-                {:then owner}
-                  <h2 class="text-md">Owner: <strong>{owner.username}</strong></h2>
-                {:catch error}
-                  <h2 class="text-md">Owner: <strong>Failed...</strong></h2>
-                {/await }
-                <div class="flex flex-row gap-4">
-                  <button class="bg-red-400 pl-4 pr-4 text-white pt-2 pb-2 mt-2 rounded-lg font-bold"><XCircle class="inline mb-1"/> Deny</button>
-                  <button class="bg-green-400 pl-4 pr-4 text-white pt-2 pb-2 mt-2 rounded-lg font-bold"><CheckCircle class="inline mb-1"/> Approve</button>
-                </div>
-              </div>
-            </li>
-          </ul>
-        {/each}
-      {/if}
+<div class="container pl-8">
+  <h1 class="pt-6 font-bold text-2xl dark:text-white">Approve Servers</h1>
+  {#if loadedYet}
+    {#if servers.length == 0}
+      <h2 class="pt-2 text-xl text-gray-500 dark:text-gray-100">No servers to approve yet.</h2>
     {:else}
-      <h2 class="pt-2 text-xl text-gray-500">Fetching servers...</h2>
+      {#each servers as server}
+        <ul class="flex flex-row pt-4 gap-4">
+          <li>
+            <div class="shadow rounded-lg dark:bg-zinc-800 bg-slate-100 pt-6 pb-6 pl-6 pr-16">
+              <h1 class="font-bold text-xl dark:text-white">{server.name}</h1>
+              {#if server.ip != null}
+                <h2 class="text-md mt-2 dark:text-white">IP: <code>{server.ip}</code></h2>
+              {:else}
+                <h2 class="text-md dark:text-white">IP: <code>{server.address}</code></h2>
+              {/if}
+              <h2 class="text-md dark:text-white">Location: <strong>{server.location}</strong></h2>
+              <h2 class="text-md dark:text-white">Region: <strong>{getRegion(server.region)}</strong></h2>
+              <h2 class="text-md dark:text-white">Created: <strong>{moment(server.createdAt).fromNow()}</strong></h2>
+              {#await getOwner(server.owner)}
+                <h2 class="text-md dark:text-white">Owner: <strong>Fetching...</strong></h2>
+              {:then owner}
+                <h2 class="text-md dark:text-white">Owner: <strong>{owner.username}</strong></h2>
+              {:catch error}
+                <h2 class="text-md dark:text-white">Owner: <strong>Failed...</strong></h2>
+              {/await }
+              <div class="flex flex-row gap-4">
+                <button on:click={deny(server)} class="dark:bg-red-500 bg-red-400 pl-4 pr-4 text-white pt-2 pb-2 mt-2 rounded-lg font-bold"><XCircle class="inline mb-1"/> Deny</button>
+                <button on:click={approve(server)} class="dark:bg-green-500 bg-green-400 pl-4 pr-4 text-white pt-2 pb-2 mt-2 rounded-lg font-bold"><CheckCircle2 class="inline mb-1"/> Approve</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      {/each}
     {/if}
-    <Footer/>
-  </div>
-</main>
+  {:else}
+    <h2 class="pt-2 text-xl text-gray-500 dark:text-gray-100">Fetching servers...</h2>
+  {/if}
+  <Footer/>
+</div>

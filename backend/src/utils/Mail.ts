@@ -15,6 +15,14 @@ We have successfully created a server for you to host games on <a href="https://
 Unfortunately, you must be verified before you can post, please await verification or contact support for more information.
 `
 
+const APPROVED_SERVER_TEMPLATE = `Hey {username}!
+Your server {serverName} has been successfully approved! Now you can post games under your server on <a href="https://ultrahardcore.org">ultrahardcore.org</a>.
+`
+
+const DENIED_SERVER_TEMPLATE = `Hey {username}!
+Your server {serverName} has been unfortunately denied for approval. Please contact staff for more reasoning.
+`
+
 export async function sendMail(to: string, subject: string, html: string) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY!)
   sgMail
@@ -69,4 +77,12 @@ export function createServerTemplate(username: string) {
 
 export function verifyEmailSuccessTemplate(username: string) {
   return replaceTemplate(VERIFY_EMAIL_SUCCESS_TEMPLATE, { username })
+}
+
+export function approvedServerTemplate(username: string, serverName: string) {
+  return replaceTemplate(APPROVED_SERVER_TEMPLATE, { username, serverName })
+}
+
+export function deniedServerTemplate(username: string, serverName: string) {
+  return replaceTemplate(DENIED_SERVER_TEMPLATE, { username, serverName })
 }

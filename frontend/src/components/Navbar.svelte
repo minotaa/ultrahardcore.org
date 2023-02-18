@@ -50,7 +50,7 @@
       {#if user.role == "admin"}
         <div class="dropdown inline-block relative">
           <button id="userDropdownButton" class="dark:bg-slate-800 dark:text-white font-bold inline-flex items-center block shadow mb-2 bg-slate-100 dark:hover:bg-slate-900 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg"><Wrench class="inline"/>&nbsp;<ChevronDown class="inline"/></button>
-          <div id="dropdownHover" class="w-auto absolute dropdown-menu z-50 hidden w-40 dark:bg-slate-700 bg-slate-200 divide-y divide-gray-100 rounded shadow">
+          <div id="dropdownHover" class="w-40 absolute dropdown-menu z-50 hidden w-40 dark:bg-slate-700 bg-slate-200 divide-y divide-gray-100 rounded shadow">
             <ul aria-labelledby="userDropdownButton">
               <a href="/servers/approve"><li class="block text-sm px-4 py-2 dark:bg-slate-700 dark:hover:bg-slate-800 hover:bg-slate-300 rounded-lg"><ServerCrash class="inline"/>&nbsp; Approve servers</li></a>
             </ul>

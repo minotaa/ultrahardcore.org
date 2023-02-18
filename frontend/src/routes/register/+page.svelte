@@ -59,32 +59,29 @@
   })
 </script>
 
-<main class="pt-4 pl-4">
-  <Navbar/>
-  <div class="flex flex-col gap-6 justify-center items-center mt-16">
-    <h1 class="text-2xl font-bold dark:text-white">Register for <a href="/" class="hover:underline">ultrahardcore.org</a></h1>
-      {#if success == false} 
-        {#if error != null}
-          <h2 class="text-center text-md dark:bg-red-500 bg-red-100 shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4"><strong>Errors:</strong> {error.join(', ')}</h2>
-        {/if}
-        <form on:submit={handleSubmit}>
-          <div class="flex flex-col gap-2 justify-center">
-            <label for="username" class="dark:text-white font-bold">Username:</label>
-            <input required bind:value={username} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="name" name="username" id="username"/>
-            <label for="email" class="dark:text-white font-bold">Email:</label>
-            <input required bind:value={email} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="email" name="email" id="email"/>
-            <label for="confirmEmail" class="dark:text-white font-bold">Confirm Email:</label>
-            <input required bind:value={confirmEmail} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="email" name="confirmEmail" id="confirmEmail"/>
-            <label for="password" class="dark:text-white font-bold">Password:</label>
-            <input required bind:value={password} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="password" name="password" id="password"/>
-            <label for="confirmPassword" class="dark:text-white font-bold">Confirm Password:</label>
-            <input required bind:value={confirmPassword} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="password" name="confirmPassword" id="confirmPassword"/>
-            <button type="submit" class="dark:bg-green-600 bg-green-400 text-white pt-2 pb-2 mt-2 rounded-lg font-bold"><UserPlus class="inline mb-1"/> Register</button>
-          </div>
-        </form>
-      {:else}
-        <h2 class="dark:bg-slate-200 text-center text-md shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4">Check your email for the verification link.</h2>
+<div class="flex flex-col gap-6 justify-center items-center mt-16">
+  <h1 class="text-2xl font-bold dark:text-white">Register for <a href="/" class="hover:underline">ultrahardcore.org</a></h1>
+    {#if success == false} 
+      {#if error != null}
+        <h2 class="text-center text-md dark:bg-red-500 bg-red-100 shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4"><strong>Errors:</strong> {error.join(', ')}</h2>
       {/if}
-      <Footer/>
-  </div>
-</main>
+      <form on:submit={handleSubmit}>
+        <div class="flex flex-col gap-2 justify-center">
+          <label for="username" class="dark:text-white font-bold">Username:</label>
+          <input required bind:value={username} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="name" name="username" id="username"/>
+          <label for="email" class="dark:text-white font-bold">Email:</label>
+          <input required bind:value={email} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="email" name="email" id="email"/>
+          <label for="confirmEmail" class="dark:text-white font-bold">Confirm Email:</label>
+          <input required bind:value={confirmEmail} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="email" name="confirmEmail" id="confirmEmail"/>
+          <label for="password" class="dark:text-white font-bold">Password:</label>
+          <input required bind:value={password} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="password" name="password" id="password"/>
+          <label for="confirmPassword" class="dark:text-white font-bold">Confirm Password:</label>
+          <input required bind:value={confirmPassword} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="password" name="confirmPassword" id="confirmPassword"/>
+          <button type="submit" class="dark:bg-green-600 bg-green-400 text-white pt-2 pb-2 mt-2 rounded-lg font-bold"><UserPlus class="inline mb-1"/> Register</button>
+        </div>
+      </form>
+    {:else}
+      <h2 class="dark:bg-slate-200 text-center text-md shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4">Check your email for the verification link.</h2>
+    {/if}
+    <Footer/>
+</div>

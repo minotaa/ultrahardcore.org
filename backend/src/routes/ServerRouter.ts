@@ -6,7 +6,7 @@ import Server from "../schemas/Server";
 import Session from "../schemas/Session";
 import User, { UserServer } from "../schemas/User";
 import { randomUUID } from "crypto";
-import { createServerTemplate, sendMail } from "../utils/Mail";
+import { approvedServerTemplate, createServerTemplate, deniedServerTemplate, sendMail } from "../utils/Mail";
 
 const ServerRouter = Router()
 ServerRouter.use(bodyParser.json())
@@ -32,6 +32,87 @@ ServerRouter.route('/getApprovableServers').get(authMiddleware, async(req, res) 
   return res.json({
     success: true,
     servers: servers
+  })
+})
+
+ServerRouter.route('/deny').post(authMiddleware, async(req, res) => {
+  let session = await Session.findOne({
+    sessionString: req.get(`Authorization`)
+  }).exec()
+  let user = await User.findOne({
+    _id: session!!.userId
+  }).exec()
+  if (user!!.role != "admin") {
+    return res.json({
+      success: false,
+      errors: ['You are not an admin']
+    })
+  }
+  if (!req.query.server) return res.send('You did not provide a valid server ID.')
+  let server = await Server.findOne({
+    id: req.query.server
+  }).exec()
+  if (!server) {
+    return res.json({
+      success: false,
+      errors: ['Invalid server']
+    })
+  }
+  let owner = await User.findOne({
+    _id: server.owner
+  }).exec()
+  if (owner) {
+    await sendMail(
+      owner.emailAddress, 
+      'Your server has been denied!',
+      deniedServerTemplate(owner.username, server.name)
+    )
+  }
+  await server.remove()
+  return res.json({
+    success: true,
+    server: server
+  })
+})
+
+ServerRouter.route('/approve').post(authMiddleware, async(req, res) => {
+  let session = await Session.findOne({
+    sessionString: req.get(`Authorization`)
+  }).exec()
+  let user = await User.findOne({
+    _id: session!!.userId
+  }).exec()
+  if (user!!.role != "admin") {
+    return res.json({
+      success: false,
+      errors: ['You are not an admin']
+    })
+  }
+  if (!req.query.server) return res.send('You did not provide a valid server ID.')
+  let server = await Server.findOne({
+    id: req.query.server
+  }).exec()
+  if (!server) {
+    return res.json({
+      success: false,
+      errors: ['Invalid server']
+    })
+  }
+  server.verified = true
+  let owner = await User.findOne({
+    _id: server.owner
+  }).exec()
+  if (owner) {
+    await sendMail(
+      owner.emailAddress, 
+      'Your server has been verified!',
+      approvedServerTemplate(owner.username, server.name)
+    )
+  }
+  await server.save()
+  return res.json({
+    success: true,
+    server: server
   })
 })
 
