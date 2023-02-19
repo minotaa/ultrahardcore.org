@@ -8,6 +8,7 @@ import User, { Member } from "../schemas/User";
 import { randomUUID } from "crypto";
 import { approvedServerTemplate, createServerTemplate, deniedServerTemplate, sendMail } from "../utils/Mail";
 import { ObjectId } from "mongoose";
+import { updateLanguageServiceSourceFile } from "typescript";
 
 const ServerRouter = Router()
 ServerRouter.use(bodyParser.json())
@@ -81,7 +82,7 @@ ServerRouter.route('/getMember').get(authMiddleware, async(req, res) => {
     errors: ['Member doesn\'t seem to be apart of that server.']
   })
 })
-
+ 
 ServerRouter.route('/deny').post(authMiddleware, async(req, res) => {
   let session = await Session.findOne({
     sessionString: req.get(`Authorization`)
@@ -175,6 +176,79 @@ ServerRouter.route('/get').get(authMiddleware, async (req, res) => {
       success: true,
       server: server
     })
+  } else {
+    return res.status(404).json({
+      success: false,
+      errors: ['Could not find server']
+    })
+  }
+})
+
+ServerRouter.route('/edit').post(authMiddleware, async (req, res) => {
+  if (!req.query.server) {
+    return res.status(403).json({
+      success: false,
+      errors: ['Invalid server ID']
+    })
+  }
+  if (!await req.body.server) {
+    return res.status(403).json({
+      success: false,
+      errors: ['Invalid server']
+    })
+  }
+  let server = await Server.findOne({
+    id: req.query.server
+  }).exec()
+  if (!server) {
+    return res.status(404).json({
+      success: false,
+      errors: ['Could not find server']
+    })
+  }
+  let session = await Session.findOne({
+    sessionString: req.get('Authorization')
+  }).exec()
+  if (!session) {
+    return res.status(404).json({
+      success: false,
+      errors: ['Could not find session']
+    })
+  }
+  let user = await User.findOne({
+    _id: session.userId
+  }).exec()
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      errors: ['Could not find user']
+    })
+  }
+  if (server) {
+    for (const member of server.members) {
+      if ((member as Member).memberId == (user._id as ObjectId).toString()) {
+        if ((member as Member).role !== 'admin' && (member as Member).role !== 'owner') {
+          return res.status(403).json({
+            success: false,
+            errors: ['You have no permission']
+          })
+        }
+        delete req.body.server._id
+        delete req.body.server.__v
+        server.remove()
+        server = new Server(req.body.server)
+        await server.save()
+        return res.json({
+          success: true,
+          server: server
+        })
+      } else {
+        return res.status(403).json({
+          success: false,
+          errors: ['You have no permission']
+        })
+      }
+    }
   } else {
     return res.status(404).json({
       success: false,

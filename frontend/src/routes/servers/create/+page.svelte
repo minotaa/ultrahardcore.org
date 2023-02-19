@@ -90,7 +90,7 @@
       </div>
     </form>
   {:else}
-    <h2 class="text-center text-md shadow rounded-lg mt-4 pt-4 pb-4 w-80 pr-8 pl-8 mb-4">Successfully created the server, please wait a Staff member to verify your server.<br/><br/><a href="/servers" class="text-sky-500 hover:underline">Go back to servers page.</a></h2>
+    <h2 class="text-center dark:text-white dark:bg-zinc-800 text-md shadow rounded-lg mt-4 pt-4 pb-4 w-80 pr-8 pl-8 mb-4">Successfully created the server, please wait a Staff member to verify your server.<br/><br/><a href="/servers" class="text-sky-500 hover:underline">Go back to servers page.</a></h2>
   {/if}
   <div class="mb-6">
     <Footer/>

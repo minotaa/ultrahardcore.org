@@ -37,7 +37,6 @@
     let payload = await response.json()
     if (payload.success) {
       user = payload.user
-      console.log(user)
       if (user.role != "admin") {
         goto('/')
       }

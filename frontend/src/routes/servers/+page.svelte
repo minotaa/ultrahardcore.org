@@ -102,7 +102,7 @@
   <h1 class="pt-6 font-bold text-2xl dark:text-white">Your Servers&nbsp; <a href="/servers/create" class="inline bg-green-400 dark:bg-green-500 text-md text-white pl-2 pr-2 pt-1 pb-1 mt-6 rounded-lg"><button><PlusCircle class="mb-1 inline"/> Create</button></a></h1>
   {#if loadedYet}
     {#if list && list.length === 0}
-    <h2 class="pt-2 text-xl text-gray-500">You are not in any servers. Maybe <a href="/servers/create" class="hover:underline text-sky-500">create one?</a></h2>
+    <h2 class="pt-2 text-xl dark:text-gray-100 text-gray-500">You are not in any servers. Maybe <a href="/servers/create" class="hover:underline text-sky-500">create one?</a></h2>
     {:else}
       <ul class="flex flex-row pt-4 gap-4">
         {#each list as server}
