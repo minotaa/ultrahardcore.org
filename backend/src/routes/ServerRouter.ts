@@ -186,8 +186,7 @@ ServerRouter.route('/get').get(authMiddleware, async (req, res) => {
 ServerRouter.route('/create').post(authMiddleware, async (req, res) => {
   let errors = []
   if (!req.body.name) errors.push('You must provide a name')
-  if (!req.body.ip && !req.body.address) errors.push('You must provide an address or an IP')
-  if (req.body.address && !req.body.address.matches(ADDRESS_REGEX)) errors.push('You must provide a valid IP Address for your server')
+  if (!req.body.ip) errors.push('You must provide an address or an IP')
   if (!req.body.region) errors.push('You must provide a server region')
   if (!req.body.location) errors.push('You must provide a server location')
   if (req.body.ip && req.body.ip.length < 6) errors.push('Your server domain must be greater than 5 characters')
@@ -216,7 +215,7 @@ ServerRouter.route('/create').post(authMiddleware, async (req, res) => {
     await user.save()
     let server = new Server({
       name: req.body.name,
-      ip: req.body.ip || req.body.address,
+      ip: req.body.ip,
       location: req.body.location,
       region: req.body.region,
       scenarioDescriptions: null,

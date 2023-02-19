@@ -19,7 +19,12 @@ const ServerSchema: Schema = new Schema({
   websiteUrl: String,
   extraLinks: Array,
   configOptions: Array,
-  customizableRules: Array
+  customizableRules: Array,
+  extraServers: Array,
+  banned: Boolean,
+  bannedBy: String,
+  bannedAt: String,
+  bannedUntil: Number
 })
 
 export default mongoose.model('server', ServerSchema)

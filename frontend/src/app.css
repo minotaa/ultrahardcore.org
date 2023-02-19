@@ -13,3 +13,7 @@
 .dropdown:hover .dropdown-menu {
   display: block;
 }
+
+.hideable:hover .hoverHidden {
+  display: block;
+}

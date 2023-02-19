@@ -30,7 +30,6 @@
 
   let serverName: string
   let serverIp: string
-  let serverAddress: string
   let serverLocation: string
   let success: boolean
   let error: string[]
@@ -48,7 +47,6 @@
       body: JSON.stringify({
         name: serverName,
         ip: serverIp,
-        address: serverAddress,
         location: serverLocation,
         region: serverRegion
       })
@@ -73,13 +71,11 @@
     <form on:submit={handleSubmit}>
       <div class="flex flex-col gap-2 justify-center">
         <label for="serverName" class="font-bold mt-6 dark:text-white">Server Name:</label>
-        <input required bind:value={serverName} placeholder="for example: applejuice" class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverName" id="serverName"/>
+        <input required bind:value={serverName} placeholder="for example: applejuice" class="shadow dark:text-white dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverName" id="serverName"/>
         <label for="serverIp" class="font-bold mt-4 dark:text-white">IP Address:</label>
-        <input bind:value={serverIp} placeholder="this must be your Hub IP, not a direct IP" class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverIp" id="serverIp"/>
-        <label for="serverAddress" class="font-bold mt-4 dark:text-white">Server Address:</label>
-        <input bind:value={serverAddress} placeholder="if you do not have a domain, use this field" class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverAddress" id="serverAddress"/>
+        <input bind:value={serverIp} placeholder="this must be your Hub IP, not a direct IP" class="shadow dark:text-white dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverIp" id="serverIp"/>
         <label for="serverLocation" class="font-bold mt-4 dark:text-white">Server Region:</label>
-        <select bind:value={serverRegion} required name="serverRegion" id="serverRegion" class="dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-96 pl-2">
+        <select bind:value={serverRegion} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-96 pl-2">
           <option value="na" class="dark:text-white">North America</option>
           <option value="eu" class="dark:text-white">Europe</option>
           <option value="au" class="dark:text-white">Oceania</option>
@@ -88,7 +84,7 @@
           <option value="af" class="dark:text-white">Africa</option>
         </select>
         <label for="serverLocation" class="font-bold mt-4 dark:text-white">Server Location:</label>
-        <input required bind:value={serverLocation} placeholder="for example: Montreal, Canada" class="dark:bg-slate-700 shadow bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverLocation" id="serverLocation"/>
+        <input required bind:value={serverLocation} placeholder="for example: Montreal, Canada" class="dark:text-white dark:bg-slate-700 shadow bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverLocation" id="serverLocation"/>
         <button type="submit" class="bg-green-400 text-white pt-2 pb-2 mt-6 rounded-lg dark:bg-green-600 font-bold w-96"><HardDrive class="inline mb-1"/> Create Server</button>
 
       </div>

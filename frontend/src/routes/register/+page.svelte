@@ -6,6 +6,7 @@
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
   import { token } from "../../hooks/auth";
+  import { toast } from "@zerodevx/svelte-toast"
 
   let email: string 
   let username: string
@@ -54,6 +55,7 @@
       user = null
     }
     if (user) {
+      toast.push("You're already logged in!")
       goto('/')
     }
   })

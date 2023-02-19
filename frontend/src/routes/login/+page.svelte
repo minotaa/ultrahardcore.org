@@ -25,6 +25,7 @@
       user = null
     }
     if (user) {
+      toast.push("You're already logged in!")
       goto('/')
     }
   })

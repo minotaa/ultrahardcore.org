@@ -5,6 +5,7 @@
   import { readable, writable } from 'svelte/store'
   import { token } from "../hooks/auth"
   import { onMount } from "svelte";
+  import { toast } from "@zerodevx/svelte-toast"
 
   let user: any
   onMount(async () => {
@@ -34,6 +35,7 @@
     e.preventDefault()
     token.set(null)
     user = null
+    toast.push("You've logged out!")
   }
 </script>
 
@@ -50,9 +52,9 @@
       {#if user.role == "admin"}
         <div class="dropdown inline-block relative">
           <button id="userDropdownButton" class="dark:bg-slate-800 dark:text-white font-bold inline-flex items-center block shadow mb-2 bg-slate-100 dark:hover:bg-slate-900 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg"><Wrench class="inline"/>&nbsp;<ChevronDown class="inline"/></button>
-          <div id="dropdownHover" class="w-40 absolute dropdown-menu z-50 hidden w-40 dark:bg-slate-700 bg-slate-200 divide-y divide-gray-100 rounded shadow">
+          <div id="dropdownHover" class="w-40 absolute dropdown-menu z-50 hidden w-40 dark:bg-slate-700 dark:text-white bg-slate-200 divide-y divide-gray-100 rounded shadow">
             <ul aria-labelledby="userDropdownButton">
-              <a href="/servers/approve"><li class="block text-sm px-4 py-2 dark:bg-slate-700 dark:hover:bg-slate-800 hover:bg-slate-300 rounded-lg"><ServerCrash class="inline"/>&nbsp; Approve servers</li></a>
+              <a href="/servers/approve"><li class="block text-sm px-4 py-2 dark:bg-slate-700 dark:text-white dark:hover:bg-slate-800 hover:bg-slate-300 rounded-lg"><ServerCrash class="inline"/>&nbsp; Approve servers</li></a>
             </ul>
           </div>
         </div>
@@ -61,8 +63,8 @@
         <button id="userDropdownButton" class="dark:bg-slate-800 dark:text-white mr-4 font-bold inline-flex items-center block shadow mb-2 bg-slate-100 dark:hover:bg-slate-900 hover:bg-slate-200 pt-2 pl-4 pr-4 pb-2 rounded-lg">{user.username} <ChevronDown class="inline"/></button>
         <div id="dropdownHover" class="w-auto absolute dark:bg-slate-700 dropdown-menu z-50 hidden bg-slate-200 divide-y divide-gray-100 rounded shadow">
           <ul aria-labelledby="userDropdownButton">
-            <a href="/servers"><li class="block text-sm px-4 py-2 dark:hover:bg-slate-800 dark:bg-slate-700 hover:bg-slate-300 rounded-lg"><Server class="inline"/>&nbsp; Your servers</li></a>
-            <li on:click={logOut} class="block text-sm px-4 py-2 dark:hover:bg-slate-800 hover:bg-slate-300 rounded-lg"><UserMinus class="inline"/>&nbsp; Log out</li>
+            <a href="/servers"><li class="block text-sm px-4 py-2 dark:hover:bg-slate-800 dark:text-white dark:bg-slate-700 hover:bg-slate-300 rounded-lg"><Server class="inline"/>&nbsp; Your servers</li></a>
+            <li on:click={logOut} class="block text-sm px-4 py-2 dark:hover:bg-slate-800 dark:text-white hover:bg-slate-300 rounded-lg"><UserMinus class="inline"/>&nbsp; Log out</li>
           </ul>
         </div>
       </div>
