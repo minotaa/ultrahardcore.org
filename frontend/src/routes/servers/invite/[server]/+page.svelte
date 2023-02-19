@@ -94,6 +94,21 @@
     }
   }
   let foundUsers = []
+  let selectedUser: object 
+
+  function selectUser(u: object) {
+    selectedUser = u.mId
+    invitee = u.username
+    console.log('selected')
+  }
+
+  function inviteUser() {
+
+  }
+
+  function unselect() {
+    foundUsers = []
+  }
 </script>
 
 <div class="container pl-8">
@@ -102,13 +117,15 @@
       <h3 class="mt-4 text-sky-400 font-bold"><a href="/servers">← Go back to servers list</a></h3>
       <h2 class="pt-4 font-bold text-2xl dark:text-white">Invite Users</h2>
       <h3 class="mb-2 text-lg dark:text-white">Invite other members to {server.name}!</h3>
-      <input on:input={getSuggestions} bind:value={invitee} class="shadow dark:text-white dark:bg-slate-700 bg-slate-100 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="invite" id="invite"/>
-      <button class="w-1/8 inline bg-sky-400 dark:bg-sky-500 text-md text-white pl-2 pr-2 pt-2 pb-2 rounded-lg">Invite</button>
+      <input on:blur={unselect} on:input={getSuggestions} bind:value={invitee} class="shadow dark:text-white dark:bg-slate-700 bg-slate-100 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="invite" id="invite"/>
+      {#if selectedUser}
+        <button on:click={inviteUser} class="w-1/8 inline bg-sky-400 dark:bg-sky-500 text-md text-white pl-2 pr-2 pt-2 pb-2 rounded-lg">Invite</button>
+      {/if}
     </div>
     <ul>
       {#if foundUsers.length > 0}
-        {#each foundUsers as user, i}
-          <li class="w-1/3 text-md dark:text-white pl-2 pt-2 pb-2 dark:bg-slate-800 bg-slate-200 dark:hover:bg-slate-900 hover:bg-slate-300">{user.username}</li>
+        {#each foundUsers as u, i}
+          <li on:click={selectUser(u)} class="w-1/3 text-md dark:text-white pl-2 pt-2 pb-2 dark:bg-slate-800 bg-slate-200 dark:hover:bg-slate-900 hover:bg-slate-300">{u.username}</li>
         {/each}
       {/if}
     </ul>
