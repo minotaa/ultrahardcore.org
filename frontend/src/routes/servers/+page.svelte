@@ -40,7 +40,6 @@
       user = payload.user
       servers = payload.user.servers
       for await (const server of servers) {
-        console.log(server)
         const response = await fetch(`http://localhost:9000/server/get?server=${server}`, {
           method: 'GET', // @ts-ignore
           headers: {
@@ -133,7 +132,7 @@
                 <h2 class="text-sm dark:text-white">Fetching membership details...</h2>
               {:then member}
                 {#if member.role == "owner" || member.role == "admin"}
-                  <h2 class="mt-2 text-sm dark:text-white"><a href="/servers/manage/{server.id}" class="text-sky-500 hover:underline">Manage</a> | <a href="/server/{server.id}" class="text-sky-500 hover:underline">View</a></h2>
+                  <h2 class="mt-2 text-sm dark:text-white"><a href="/servers/manage/{server.id}" class="text-sky-500 hover:underline">Manage</a> | <a href="/servers/invite/{server.id}" class="text-sky-500 hover:underline">Invite</a> | <a href="/server/{server.id}" class="text-sky-500 hover:underline">View</a></h2>
                 {:else}
                   <h2 class="mt-2 text-sm dark:text-white"><a href="/server/{server.id}" class="text-sky-500 hover:underline">View</a></h2>
                 {/if}

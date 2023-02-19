@@ -68,9 +68,9 @@
       {/if}
       <div class="flex flex-col gap-2">
         <label for="email" class="dark:text-white font-bold">Username or Email:</label>
-        <input required bind:value={email} class="shadow bg-slate-100 dark:bg-slate-700 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="email" id="email"/>
+        <input required bind:value={email} class="dark:text-white shadow bg-slate-100 dark:bg-slate-700 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="email" id="email"/>
         <label for="password" class="dark:text-white font-bold">Password:</label>
-        <input required bind:value={password} class="shadow bg-slate-100 dark:bg-slate-700 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="password" name="password" id="password">
+        <input required bind:value={password} class="dark:text-white shadow bg-slate-100 dark:bg-slate-700 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="password" name="password" id="password">
         <div class="mt-2 text-center">
           <input bind:checked={rememberMe} type="checkbox" name="rememberMe" id="rememberMe">
           <label class="dark:text-white" for="rememberMe">Remember me?</label>

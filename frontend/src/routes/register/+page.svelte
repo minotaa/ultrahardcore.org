@@ -70,15 +70,15 @@
       <form on:submit={handleSubmit}>
         <div class="flex flex-col gap-2 justify-center">
           <label for="username" class="dark:text-white font-bold">Username:</label>
-          <input required bind:value={username} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="name" name="username" id="username"/>
+          <input required bind:value={username} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="name" name="username" id="username"/>
           <label for="email" class="dark:text-white font-bold">Email:</label>
-          <input required bind:value={email} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="email" name="email" id="email"/>
+          <input required bind:value={email} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="email" name="email" id="email"/>
           <label for="confirmEmail" class="dark:text-white font-bold">Confirm Email:</label>
-          <input required bind:value={confirmEmail} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="email" name="confirmEmail" id="confirmEmail"/>
+          <input required bind:value={confirmEmail} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="email" name="confirmEmail" id="confirmEmail"/>
           <label for="password" class="dark:text-white font-bold">Password:</label>
-          <input required bind:value={password} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="password" name="password" id="password"/>
+          <input required bind:value={password} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="password" name="password" id="password"/>
           <label for="confirmPassword" class="dark:text-white font-bold">Confirm Password:</label>
-          <input required bind:value={confirmPassword} class="shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="password" name="confirmPassword" id="confirmPassword"/>
+          <input required bind:value={confirmPassword} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="password" name="confirmPassword" id="confirmPassword"/>
           <button type="submit" class="dark:bg-green-600 bg-green-400 text-white pt-2 pb-2 mt-2 rounded-lg font-bold"><UserPlus class="inline mb-1"/> Register</button>
         </div>
       </form>

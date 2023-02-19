@@ -101,6 +101,44 @@ AccountRouter.route('/getId').get(authMiddleware, async (req, res) => {
   }
 })
 
+AccountRouter.route('/getNames').get(authMiddleware, async (req, res) => {
+  if (!req.query.name) {
+    return res.status(400).json({
+      success: false,
+      errors: ['You need to provide a username']
+    })
+  }
+  let user = await User.find({
+    username: new RegExp(`^${req.query.name}`)
+  }).exec()
+  if (user.length > 0) {
+    let users: object[] = []
+    user.forEach(u => {
+      users.push({
+        createdAt: u.createdAt,
+        emailAddress: u.emailAddress,
+        username: u.username,
+        id: u.id,
+        role: u.role,
+        banned: u.banned,
+        bannedBy: u.bannedBy,
+        bannedAt: u.bannedAt,
+        bannedUntil: u.bannedUntil,
+        servers: u.servers
+      })
+    })
+    return res.json({
+      success: true,
+      users: users
+    })
+  } else {
+    return res.status(400).json({
+      success: false,
+      errors: ['Invalid user']
+    })
+  }
+})
+
 AccountRouter.route('/login').post(async (req, res) => {
   let errors = []
   if (!req.body) errors.push('You must supply a body')
@@ -202,10 +240,10 @@ AccountRouter.route('/register').post(async (req, res) => {
   if (username.length <= 2) errors.push('Your username\'s too short.')
   if (!req.body.email.match(emailRegex)) errors.push('Your email is invalid')
   let emails = await User.find({
-    email: req.body.email,
+    emailAddress: req.body.email,
   }).exec()
   let usernames = await User.find({
-    name: req.body.username,
+    username: req.body.username,
   }).exec()
   if (usernames.length > 0) errors.push('This username is already in use')
   if (emails.length > 0) errors.push('This email is already in use')

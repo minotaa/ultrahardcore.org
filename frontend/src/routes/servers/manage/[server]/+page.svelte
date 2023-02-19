@@ -139,14 +139,17 @@
     server.configOptions.splice(index, 1)
     server.configOptions = server.configOptions
   }
+
+  let invitee: string
 </script>
 
 <div class="container pl-8">
   {#if loadedYet}
+    <h3 class="mt-4 text-sky-400 font-bold"><a href="/servers">← Go back to servers list</a></h3>
     <h1 class="pt-6 mb-2 font-bold text-3xl dark:text-white">Manage {server.name}</h1>
     <button on:click={save} class="w-1/5 mt-8 inline bg-green-400 dark:bg-green-500 text-md text-white pl-2 pr-2 pt-1 pb-1 rounded-lg"><Save class="mb-1 inline"/> Submit Changes</button>
-    <div class="flex flex-col gap-2 justify-center">
-      <h2 class="pt-4 mt-4 font-bold text-2xl dark:text-white">Server Details</h2>
+    <div class="flex flex-col gap-2 mt-4 justify-center">
+      <h2 class="pt-4 font-bold text-2xl dark:text-white">Server Details</h2>
       <h3 class="mb-2 text-lg dark:text-white">Change general details about your server.</h3>
       <label for="serverName" class="font-bold mt-2 dark:text-white">Change Name:</label>
       <input required bind:value={server.name} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="text" name="serverName" id="serverName"/>
