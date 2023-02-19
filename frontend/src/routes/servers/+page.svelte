@@ -60,15 +60,17 @@
 
   function getRegion(region: string) {
     if (region == "na") {
-      return "North America"
+      return "🌎 North America"
     } else if (region == "au") {
-      return "Oceania"
+      return "🌏 Oceania"
     } else if (region == "as") {
-      return "Asia"
+      return "🌏 Asia"
     } else if (region == "sa") {
-      return "South America"
+      return "🌎 South America"
     } else if (region == "af") {
-      return "Africa"
+      return "🌍 Africa"
+    } else if (region == "eu") {
+      return "🌍 Europe" 
     }
   }
 

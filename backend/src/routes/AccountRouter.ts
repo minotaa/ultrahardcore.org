@@ -101,36 +101,32 @@ AccountRouter.route('/getId').get(authMiddleware, async (req, res) => {
   }
 })
 
-AccountRouter.route('/getNames').get(authMiddleware, async (req, res) => {
+AccountRouter.route('/getName').get(authMiddleware, async (req, res) => {
   if (!req.query.name) {
     return res.status(400).json({
       success: false,
       errors: ['You need to provide a username']
     })
   }
-  let user = await User.find({
-    username: new RegExp(`^${req.query.name}`)
+  let user = await User.findOne({
+    username: req.query.name
   }).exec()
-  if (user.length > 0) {
-    let users: object[] = []
-    user.forEach(u => {
-      users.push({
-        createdAt: u.createdAt,
-        emailAddress: u.emailAddress,
-        username: u.username,
-        id: u.id,
-        mId: u._id,
-        role: u.role,
-        banned: u.banned,
-        bannedBy: u.bannedBy,
-        bannedAt: u.bannedAt,
-        bannedUntil: u.bannedUntil,
-        servers: u.servers
-      })
-    })
+  if (user) {
     return res.json({
       success: true,
-      users: users
+      user: {
+        createdAt: user.createdAt,
+        emailAddress: user.emailAddress,
+        username: user.username,
+        id: user.id,
+        mId: user._id,
+        role: user.role,
+        banned: user.banned,
+        bannedBy: user.bannedBy,
+        bannedAt: user.bannedAt,
+        bannedUntil: user.bannedUntil,
+        servers: user.servers
+      }
     })
   } else {
     return res.status(400).json({

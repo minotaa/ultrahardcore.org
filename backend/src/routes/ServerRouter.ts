@@ -184,6 +184,88 @@ ServerRouter.route('/get').get(authMiddleware, async (req, res) => {
   }
 })
 
+ServerRouter.route('/invite').post(authMiddleware, async (req, res) => {
+  if (!req.query.server) {
+    return res.status(403).json({
+      success: false,
+      errors: ['Invalid server ID']
+    })
+  }
+  if (!req.query.user) {
+    return res.status(403).json({
+      success: false,
+      errors: ['Invalid user ID']
+    })
+  }
+  if (!req.query.server || !req.query.user) {
+    return res.status(403).json({
+      success: false,
+      errors: ['Invalid server or user']
+    })
+  }
+  let server = await Server.findOne({
+    id: req.query.server
+  }).exec()
+  if (!server) {
+    return res.status(404).json({
+      success: false,
+      errors: ['Could not find server']
+    })
+  }
+  let session = await Session.findOne({
+    sessionString: req.get(`Authorization`)
+  }).exec()
+  let user = await User.findOne({
+    _id: session!!.userId
+  }).exec()
+  let invitee = await User.findOne({
+    _id: req.query.user
+  }).exec()
+  if (!invitee) {
+    return res.status(404).json({
+      success: false,
+      errors: ['Could not find invitee']
+    })
+  }
+  if (user) {
+    for (const member of server.members) {
+      if ((member as Member).memberId == (invitee._id as ObjectId).toString()) {
+        return res.status(203).json({
+          success: true,
+          errors: ["User is already in server"]
+        })
+      }
+      if ((member as Member).memberId == (user._id as ObjectId).toString()) {
+        if ((member as Member).role !== 'admin' && (member as Member).role !== 'owner') {
+          return res.status(403).json({
+            success: false,
+            errors: ["You do not have permission"]
+          })
+        } else {
+          if (!server.invited.includes(invitee._id)) {
+            server.invited.push(invitee._id)
+            await server.save()
+            return res.json({
+              success: true,
+              errors: [`Successfully invited ${invitee.username}`]
+            })
+          } else {
+            return res.json({
+              success: true,
+              errors: [`Successfully invited ${invitee.username}`]
+            })
+          }
+        }
+      } else {
+        return res.status(400).json({
+          success: false,
+          errors: ["You are not in this server"]
+        })
+      }
+    }
+  }
+})
+
 ServerRouter.route('/edit').post(authMiddleware, async (req, res) => {
   if (!req.query.server) {
     return res.status(403).json({
