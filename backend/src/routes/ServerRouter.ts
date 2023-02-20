@@ -184,6 +184,90 @@ ServerRouter.route('/get').get(authMiddleware, async (req, res) => {
   }
 })
 
+ServerRouter.route('/denyInvite').post(authMiddleware, async (req, res) => {
+  if (!req.query.server) {
+    return res.status(403).json({
+      success: false,
+      errors: ['Invalid server ID']
+    })
+  }
+  let server = await Server.findOne({
+    id: req.query.server
+  }).exec()
+  if (!server) {
+    return res.status(404).json({
+      success: false,
+      errors: ['Invalid server']
+    })
+  }
+  let session = await Session.findOne({
+    sessionString: req.get(`Authorization`)
+  }).exec()
+  let user = await User.findOne({
+    _id: session!!.userId
+  }).exec()
+  if (server.invited.includes(user!!._id)) {
+    let index = server.invited.indexOf(user!!._id)
+    server.invited.splice(index, 1)
+    server.invited = server.invited
+    await server.save()
+    return res.json({
+      success: true,
+      server: server
+    })
+  } else {
+    return res.status(400).json({
+      success: false,
+      errors: ['You were not invited']
+    })
+  }
+})
+
+ServerRouter.route('/acceptInvite').post(authMiddleware, async (req, res) => {
+  if (!req.query.server) {
+    return res.status(403).json({
+      success: false,
+      errors: ['Invalid server ID']
+    })
+  }
+  let server = await Server.findOne({
+    id: req.query.server
+  }).exec()
+  if (!server) {
+    return res.status(404).json({
+      success: false,
+      errors: ['Invalid server']
+    })
+  }
+  let session = await Session.findOne({
+    sessionString: req.get(`Authorization`)
+  }).exec()
+  let user = await User.findOne({
+    _id: session!!.userId
+  }).exec()
+  if (server.invited.includes(user!!._id)) {
+    let index = server.invited.indexOf(user!!._id)
+    server.invited.splice(index, 1)
+    server.invited = server.invited
+    server.members.push({
+      memberId: user!!._id,
+      serverId: server.id,
+      joinedAt: new Date(),
+      role: "default"
+    } as Member)
+    await server.save()
+    return res.json({
+      success: true,
+      server: server
+    })
+  } else {
+    return res.status(400).json({
+      success: false,
+      errors: ['You were not invited']
+    })
+  }
+})
+
 ServerRouter.route('/invite').post(authMiddleware, async (req, res) => {
   if (!req.query.server) {
     return res.status(403).json({

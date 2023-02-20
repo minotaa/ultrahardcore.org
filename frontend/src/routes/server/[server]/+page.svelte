@@ -5,7 +5,7 @@
   import { onMount } from 'svelte';
   import { token } from '../../../hooks/auth';
   import Footer from '../../../components/Footer.svelte';
-  import { Twitter, Gamepad, Newspaper, Laptop, Link } from 'lucide-svelte';
+  import { Twitter, Gamepad, Newspaper, Laptop, Link, CheckCircle2, XCircle } from 'lucide-svelte';
 
   interface Server {
     name: string,
@@ -30,16 +30,31 @@
   }
 
   let server: Server
+  let user: any
   let loadedYet = false
-  let extraServers = []
+  let extraServers: string[] = []
   onMount(async() => {
-    let response = await fetch(`http://localhost:9000/server/get?server=${await $page.params.server}`, {
+
+    let response = await fetch(`http://localhost:9000/account/get`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
       }
     })
     let payload = await response.json()
+    if (payload.success) {
+      user = payload.user
+    } else {
+      token.set(undefined)
+      user = null
+    }
+    response = await fetch(`http://localhost:9000/server/get?server=${await $page.params.server}`, {
+      method: 'GET', // @ts-ignore
+      headers: {
+        'Authorization': $token
+      }
+    })
+    payload = await response.json()
     if (payload.success) {
       server = payload.server
       if (server.extraServers.length > 0) {
@@ -82,18 +97,59 @@
     if (payload.success) return payload.user
     else return null
   }
+
+  async function denyInvite() {
+    const response = await fetch(`http://localhost:9000/server/denyInvite?server=${server.id}`, {
+      method: 'POST', // @ts-ignore
+      headers: {
+        'Authorization': $token
+      }
+    })
+    const payload = await response.json()
+    if (payload.success) {
+      server = payload.server
+      toast.push(`Successfully denied ${server.name}'s invite.'`)
+    }
+  }
+
+  async function acceptInvite() {
+    const response = await fetch(`http://localhost:9000/server/acceptInvite?server=${server.id}`, {
+      method: 'POST', // @ts-ignore
+      headers: {
+        'Authorization': $token
+      }
+    })
+    const payload = await response.json()
+    if (payload.success) {
+      server = payload.server
+      toast.push(`Successfully accepted ${server.name}'s invite.'`)
+    }
+  }
 </script>
 
 <div class="container pl-8">
   {#if loadedYet}
+    {#if user && server.invited.includes(user.mId)}
+      <div class="mt-8 pt-4 pl-4 pb-4 w-fit rounded-lg pr-4 shadow dark:bg-zinc-800 bg-slate-100">
+        <div class="flex flex-row gap-4">
+          <div>
+            <h2 class="text-xl dark:text-white mt-3">You've been invited to <strong>{server.name}</strong>!</h2>
+          </div>
+          <div class="flex flex-row gap-4">
+            <button on:click={denyInvite} class="dark:bg-red-500 bg-red-400 pl-4 pr-4 text-white pt-2 pb-2 mt-1 rounded-lg font-bold"><XCircle class="inline mb-1"/> Deny Invite</button>
+            <button on:click={acceptInvite} class="dark:bg-green-500 bg-green-400 pl-4 pr-4 text-white pt-2 pb-2 mt-1 rounded-lg font-bold"><CheckCircle2 class="inline mb-1"/> Accept Invite</button>
+          </div>
+        </div>
+      </div>
+    {/if}
     <h2 class="pt-4 font-bold text-3xl dark:text-white">{server.name}</h2>
     <h3 class="pt-2 text-xl dark:text-white">Region: <strong>{getRegion(server.region)}</strong> | Location: <strong>{server.location}</strong></h3>
     {#await getOwner(server.owner)}
-      <h2 class="text-xl dark:text-white">Owner: <strong>Fetching...</strong></h2>
+      <h2 class="text-xl dark:text-white">Owner: <strong>Fetching...</strong> | Members: <strong>{server.members.length}</strong></h2>
     {:then owner}
-      <h2 class="text-xl dark:text-white">Owner: <strong>{owner.username}</strong></h2>
+      <h2 class="text-xl dark:text-white">Owner: <strong>{owner.username}</strong> | Members: <strong>{server.members.length}</strong></h2>
     {:catch error}
-      <h2 class="text-xl dark:text-white">Owner: <strong>Failed...</strong></h2>
+      <h2 class="text-xl dark:text-white">Owner: <strong>Failed...</strong> | Members: <strong>{server.members.length}</strong></h2>
     {/await}
     {#if server.extraServers && server.extraServers.length > 0}
       <h3 class="pt-2 text-xl dark:text-white"><strong>Servers:</strong></h3>
