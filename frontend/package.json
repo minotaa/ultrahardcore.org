@@ -24,6 +24,7 @@
 	"type": "module",
 	"dependencies": {
 		"@zerodevx/svelte-toast": "1.0.0-rc.1",
+		"calendarize": "^1.1.1",
 		"lucide-svelte": "^0.115.0",
 		"moment": "^2.29.4",
 		"moment-timezone": "^0.5.40",
