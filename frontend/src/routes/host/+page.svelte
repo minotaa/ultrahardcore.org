@@ -23,7 +23,7 @@
 	  return () => clearInterval(interval);
   })
 
-  let desiredTime = $nearest
+  let desiredTime = $nearest.add('minutes', 30)
 
   let hours = [
     "00", 
@@ -70,8 +70,8 @@
     checkConflicts()
   }
 
-  function setDate(day: string) {
-    desiredTime.date(parseInt(day))
+  function setDate(day: number) {
+    desiredTime.set({ 'month': tm.month(), 'date': day })
     desiredTime = desiredTime
     checkConflicts()
   }
@@ -100,13 +100,15 @@
   let thisMonthLabel = moment().format("MMMM YYYY")
   let nextMonth = calendarize(moment().add(1, 'months').toDate())
   let nm = moment().add(1, 'months')
+  let tm = moment()
+  let shown = false
   let nextMonthLabel = moment().add(1, 'months').format("MMMM YYYY")
 </script>
 
 <div class="container pl-8">
   <h1 class="pt-6 font-bold text-2xl dark:text-white">Create Match</h1>
   <h2 class="font-bold text-xl dark:text-white">desired: {desiredTime.format("MMM Do, HH:mm")}</h2>
-  <div class="flex flex-col justify-center">
+  <div class="flex flex-col gap-3 items-center">
     {#if errors.length > 0}
       <h2 class="text-center mt-2 text-md bg-red-100 dark:text-white dark:bg-red-500 shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4"><strong>Error:</strong> {errors.join(', ')}</h2>
     {/if}
@@ -119,7 +121,11 @@
               {#if day == 0}
                 <button class="p-2 w-12 h-12 dark:text-white border-slate-200 dark:border-slate-700 bg-slate-200 dark:bg-slate-800">&nbsp;</button> 
               {:else}
-                <button class="p-2 w-12 h-12 dark:text-white border-slate-200 dark:border-slate-700 bg-slate-200 dark:bg-slate-800">{day}</button> 
+                {#if desiredTime.month() == tm.month() && desiredTime.date() == day}
+                  <button class="p-2 w-12 bg-zinc-900 h-12 dark:text-white border-slate-200 dark:border-slate-700">{day}</button> 
+                {:else}
+                  <button on:click={() => { setDate(day) }} class="p-2 w-12 hover:bg-zinc-900 h-12 dark:text-white border-slate-200 dark:border-slate-700 bg-slate-200 dark:bg-slate-800">{day}</button> 
+                {/if}
               {/if}
             {/each}
           </div>
@@ -133,7 +139,11 @@
               {#if day == 0}
                 <button class="p-2 w-12 h-12 dark:text-white border-slate-200 dark:border-slate-700 bg-slate-200 dark:bg-slate-800">&nbsp;</button> 
               {:else}
-                <button class="p-2 w-12 hover:bg-zinc-900 h-12 dark:text-white border-slate-200 dark:border-slate-700 bg-slate-200 dark:bg-slate-800">{day}</button> 
+                {#if desiredTime.month() == nm.month() && desiredTime.date() == day}
+                  <button class="p-2 w-12 bg-zinc-900 h-12 dark:text-white border-slate-200 dark:border-slate-700">{day}</button> 
+                {:else}
+                  <button on:click={() => { setDateNextMonth(nm.month(), day) }} class="p-2 w-12 hover:bg-zinc-900 h-12 dark:text-white border-slate-200 dark:border-slate-700 bg-slate-200 dark:bg-slate-800">{day}</button> 
+                {/if}
               {/if}
             {/each}
           </div>
@@ -141,31 +151,33 @@
       </div>
     </div>
     <div class="flex-row gap-4">
-      <h3 class="border-2 border-slate-50 select-none border-slate-200 dark:border-slate-700 text-xl dark:text-white pt-2 pb-2 pl-8 pr-8 bg-slate-100 dark:bg-slate-800 rounded-lg text-center w-fit mt-2">{desiredTime.format("HH:mm")}</h3>
+      <h3 on:click={() => { shown = !shown }} class="border-2 border-slate-50 select-none border-slate-200 dark:border-slate-700 text-xl dark:text-white pt-2 pb-2 pl-8 pr-8 bg-slate-100 dark:bg-slate-800 rounded-lg text-center w-fit mt-2">{desiredTime.format("HH:mm")}</h3>
+      {#if shown}
       <div class="gap-2 border-slate-200 flex-row flex mt-2 border-2 bg-slate-100 dark:bg-slate-800 select-none dark:border-slate-700 rounded-lg pt-2 pb-2 pl-4 pr-4 w-fit text-md dark:text-white">
-        <div class="overflow-x-hidden overflow-y-auto h-[128px] mr-2 pr-4">
-          <ul>
-            {#each hours as hour} <!-- I don't know why, but I just can't make these elements active. sad -->
-              {#if (desiredTime.format("HH") === hour)}
-                <li><button class:active={(desiredTime.format("HH") === hour)} on:click={() => {setHour(hour)}} class="font-bold dark:bg-slate-900 bg-slate-200 active:font-bold dark:active:bg-slate-900 dark:bg-slate-800 dark:hover:bg-slate-900 bg-slate-100 hover:bg-slate-200 rounded text-xl pl-2 pr-2">{hour}</button></li>
-              {:else}
-                <li><button class:active={(desiredTime.format("HH") === hour)} on:click={() => {setHour(hour)}} class="active:font-bold dark:active:bg-slate-900 dark:bg-slate-800 dark:hover:bg-slate-900 bg-slate-100 hover:bg-slate-200 rounded text-xl pl-2 pr-2">{hour}</button></li>
-              {/if}
-            {/each}
-          </ul>
+          <div class="overflow-x-hidden overflow-y-auto h-[128px] mr-2 pr-4">
+            <ul>
+              {#each hours as hour} <!-- I don't know why, but I just can't make these elements active. sad -->
+                {#if (desiredTime.format("HH") === hour)}
+                  <li><button class:active={(desiredTime.format("HH") === hour)} on:click={() => {setHour(hour)}} class="font-bold dark:bg-slate-900 bg-slate-200 active:font-bold dark:active:bg-slate-900 dark:bg-slate-800 dark:hover:bg-slate-900 bg-slate-100 hover:bg-slate-200 rounded text-xl pl-2 pr-2">{hour}</button></li>
+                {:else}
+                  <li><button class:active={(desiredTime.format("HH") === hour)} on:click={() => {setHour(hour)}} class="active:font-bold dark:active:bg-slate-900 dark:bg-slate-800 dark:hover:bg-slate-900 bg-slate-100 hover:bg-slate-200 rounded text-xl pl-2 pr-2">{hour}</button></li>
+                {/if}
+              {/each}
+            </ul>
+          </div>
+          <div class="overflow-x-hidden overflow-y-auto h-[30] mr-2 pr-6">
+            <ul>
+              {#each minutes as minute} <!-- I don't know why, but I just can't make these elements active. sad -->
+                {#if (desiredTime.format("mm") === minute)}
+                  <li><button class:active={(desiredTime.format("mm") === minute)} on:click={() => {setMinute(minute)}} class="font-bold dark:bg-slate-900 bg-slate-200 active:font-bold dark:active:bg-slate-900 dark:bg-slate-800 dark:hover:bg-slate-900 bg-slate-100 hover:bg-slate-200 rounded text-xl pl-2 pr-2">{minute}</button></li>
+                {:else}
+                  <li><button class:active={(desiredTime.format("mm") === minute)} on:click={() => {setMinute(minute)}} class="active:font-bold dark:active:bg-slate-900 dark:bg-slate-800 dark:hover:bg-slate-900 bg-slate-100 hover:bg-slate-200 rounded text-xl pl-2 pr-2">{minute}</button></li>
+                {/if}
+              {/each}
+            </ul>
+          </div>
         </div>
-        <div class="overflow-x-hidden overflow-y-auto h-[30] mr-2 pr-6">
-          <ul>
-            {#each minutes as minute} <!-- I don't know why, but I just can't make these elements active. sad -->
-              {#if (desiredTime.format("mm") === minute)}
-                <li><button class:active={(desiredTime.format("mm") === minute)} on:click={() => {setMinute(minute)}} class="font-bold dark:bg-slate-900 bg-slate-200 active:font-bold dark:active:bg-slate-900 dark:bg-slate-800 dark:hover:bg-slate-900 bg-slate-100 hover:bg-slate-200 rounded text-xl pl-2 pr-2">{minute}</button></li>
-              {:else}
-                <li><button class:active={(desiredTime.format("mm") === minute)} on:click={() => {setMinute(minute)}} class="active:font-bold dark:active:bg-slate-900 dark:bg-slate-800 dark:hover:bg-slate-900 bg-slate-100 hover:bg-slate-200 rounded text-xl pl-2 pr-2">{minute}</button></li>
-              {/if}
-            {/each}
-          </ul>
-        </div>
-      </div>
+      {/if}
     </div>
   </div>
 </div>
