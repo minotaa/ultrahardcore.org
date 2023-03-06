@@ -9,6 +9,7 @@ import bodyParser from 'body-parser'
 import { authMiddleware } from '../middleware/UserMiddleware'
 import { sendEmailVerification, sendMail, verifyEmailSuccessTemplate } from '../utils/Mail'
 import { logger } from '../index'
+import Server from '../schemas/Server'
 
 const AccountRouter = Router()
 AccountRouter.use(bodyParser.json())
@@ -39,6 +40,33 @@ AccountRouter.route('/').all(authMiddleware, (req, res) => {
   verificationToken: String,
   emailVerified: Boolean
 })*/
+
+AccountRouter.route('/servers').get(authMiddleware, async (req, res) => {
+  let session = await Session.findOne({
+    sessionString: req.get(`Authorization`)
+  }).exec()
+  let user = await User.findOne({
+    _id: session!!.userId
+  }).exec()
+  if (user) {
+    let servers = []
+    for (const serverId of user.servers) {
+      let server = await Server.findOne({
+        id: serverId
+      }).exec()
+      if (server) servers.push(server)
+    }
+    return res.json({
+      success: true,
+      servers: servers
+    })
+  } else {
+    return res.status(400).json({
+      success: false,
+      errors: ['You need to provide a user']
+    })
+  }
+})
 
 AccountRouter.route('/get').get(authMiddleware, async (req, res) => {
   let session = await Session.findOne({

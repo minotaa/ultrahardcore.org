@@ -5,8 +5,8 @@
   import moment from "moment";
   import { toast } from '@zerodevx/svelte-toast'
   import { goto } from '$app/navigation';
-    import { PlusCircle, Save, X } from 'lucide-svelte';
-    import Footer from '../../../../components/Footer.svelte';
+  import { PlusCircle, Save, X } from 'lucide-svelte';
+  import Footer from '../../../../components/Footer.svelte';
 
   interface Server {
     name: string,
