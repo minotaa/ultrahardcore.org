@@ -20,4 +20,4 @@ const MatchSchema: Schema = new Schema({
   serverIp: String
 })
 
-export default mongoose.model('user', MatchSchema)
+export default mongoose.model('match', MatchSchema)

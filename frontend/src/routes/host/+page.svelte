@@ -5,9 +5,9 @@
   import Footer from "../../components/Footer.svelte";
   import { ArrowUpRight, Key, Milestone, PlusCircle, X } from "lucide-svelte";
   import { onMount } from "svelte";
-    import { token } from "../../hooks/auth";
-    import { goto } from "$app/navigation";
-    import { toast } from "@zerodevx/svelte-toast";
+  import { token } from "../../hooks/auth";
+  import { goto } from "$app/navigation";
+  import { toast } from "@zerodevx/svelte-toast";
 
   function toNearest15Minutes(date: Date) {
     const start = moment(date)
@@ -103,10 +103,6 @@
     }
   }
 
-  async function postMatch() {
-    console.log(desiredTime.toDate())
-  }
-
   interface Server {
     name: string,
     ip: string,
@@ -138,6 +134,7 @@
   let tm = moment()
   let shown = false
   let nextMonthLabel = moment().add(1, 'months').format("MMMM YYYY")
+
   let displayName = ''
   let hostCount: number
   let pvpEnabledIn: number = 20
@@ -150,6 +147,30 @@
   let extras: any = {}
   let selectedServerIp: string
   let selectedServerId: string
+
+  async function postMatch() {
+    await fetch("https://localhost:9000/matches/post", {
+      method: 'POST',
+      headers: {
+        'Authorization': $token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'opensAt': desiredTime.toDate(),
+        'displayName': displayName,
+        'hostCount': hostCount,
+        'pvpEnabledIn': pvpEnabledIn,
+        'finalHealOccurs': finalHealOccurs,
+        'meetupOccursAt': meetupOccursAt,
+        'extraRules': customizableRules,
+        'extraOptions': extras,
+        'mapSize': borderSize,
+        'server': selectedServerId,
+        'scenarios': scenarios,
+        'serverIp': selectedServerIp
+      })
+    })
+  }
 
   function removeScenario(index: number) {
     scenarios.splice(index, 1)
