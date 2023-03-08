@@ -29,7 +29,10 @@
 	  return () => clearInterval(interval);
   })
 
-  let desiredTime = $nearest.add('minutes', 30)
+  let desiredTime = $nearest
+    .add('minutes', 30)
+    .set('seconds', 0)
+    .set('milliseconds', 0)
 
   let hours = [
     "00", 
@@ -100,8 +103,8 @@
     }
   }
 
-  function postMatch() {
-
+  async function postMatch() {
+    console.log(desiredTime.toDate())
   }
 
   interface Server {
@@ -140,10 +143,12 @@
   let pvpEnabledIn: number = 20
   let finalHealOccurs: number = 10
   let meetupOccursAt: number = 60 
-  let borderStartsShrinking: number = 50
+  let customizableRules: object[] = []
   let borderSize: number = 2000
   let scenarios: string[] = ['Vanilla+']
   let serverSelected: Server
+  let extras: any = {}
+  let selectedServerIp: string
   let selectedServerId: string
 
   function removeScenario(index: number) {
@@ -206,6 +211,7 @@
     for (const server of servers) {
       if (server.id == id) {
         serverSelected = server
+        selectedServerIp = server.ip
         Object.keys(server.configOptions).forEach((key: any) => {
           if (server.configOptions[key] == "bool") {
             extras[key] = false
@@ -215,11 +221,16 @@
             extras[key] = 0
           }
         })
+        Object.keys(server.customizableRules).forEach((key: any) => {
+          customizableRules.push({
+            status: false,
+            note: "",
+            rule: server.customizableRules[key]
+          })
+        })
       }
     }
   }
-
-  let extras: any = {}
 </script>
 
 <div class="container pl-8">
@@ -305,6 +316,15 @@
     <h3 class="text-lg dark:text-white mt-6 mb-2 font-bold">Host Information</h3>
     <input required bind:value={displayName} placeholder="display name" class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="username" name="username" id="username"/>
     <input required bind:value={hostCount} placeholder="game count" class="ml-2 dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="hostCount" id="hostCount"/>
+    {#if serverSelected.extraServers && serverSelected.extraServers.length > 0}
+      <h3 class="text-lg dark:text-white mt-6 mb-2 font-bold">Select server</h3>
+      <select bind:value={selectedServerIp} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-96 pl-2">
+        <option value={serverSelected.ip} class="dark:text-white" disabled selected>Hub ({serverSelected.ip})</option>
+        {#each serverSelected.extraServers as extra}
+          <option value={extra.ip} class="dark:text-white">{extra.name} ({extra.ip})</option>
+        {/each}
+      </select>
+    {/if}
     <h3 class="text-lg dark:text-white mt-8 font-bold">Event Timers</h3>
     <div class="flex flex-col gap-2">
       <label for="finalHealOccursIn" class="dark:text-white mt-2">Final Heal occurs in (min.)</label>
@@ -314,6 +334,23 @@
       <label for="meetupOccursAt" class="dark:text-white mt-2">Meetup occurs in (min.)</label>
       <input required bind:value={meetupOccursAt} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="meetupOccursAt" id="meetupOccursAt"/>
     </div>
+    {#if serverSelected.customizableRules.length > 0}
+      <h3 class="text-lg dark:text-white mt-6 mb-2 font-bold">Game Rules</h3>
+      <div class="flex flex-col gap-2">
+        {#each customizableRules as rule}
+          <div class="flex flex-row gap-2">
+            <label class="mt-2 dark:text-white">{rule.rule.name}</label>
+            <select bind:value={rule.status} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-40 pl-2">
+              <option value={false} class="dark:text-white" selected>Not allowed</option>
+              <option value={true} class="dark:text-white" selected>Allowed</option>
+            </select>
+            {#if rule.rule.allowHostsToType == true}
+              <input required bind:value={rule.note} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-60" type="text" name="extraNote" id="extraNote"/>
+            {/if}
+          </div>
+        {/each}
+      </div>
+    {/if}
     <h3 class="text-lg dark:text-white mt-6 mb-2 font-bold">Game Configuration</h3>
     <div class="flex flex-col gap-2">
       <div class="flex flex-row gap-2">
@@ -355,19 +392,21 @@
   {:else}
     {#if loadedYet == true}
       <h2 class="text-xl mb-2 dark:text-white mt-4">Select server to host from</h2>
-      <select bind:value={selectedServerId} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-96 pl-2">
-        <option value="none" class="dark:text-white" disabled selected>Select a server</option>
-        {#each servers as server}
-          {#if server.verified == true}
-            <option value={server.id} class="dark:text-white">{server.name}</option>
-          {:else}
-            <option value={server.id} class="dark:text-white" disabled>{server.name}</option>
-          {/if}
-        {/each}
-      </select>
-      <button on:click={() => {
-        selectServer(selectedServerId)
-      }} type="submit" class="dark:bg-green-600 bg-green-400 text-white pt-1 pb-1 pr-2 pl-1 mt-2 rounded-lg font-bold"><ArrowUpRight class="inline mb-1"/> Create post</button>
+      <div class="flex flex-col">
+        <select bind:value={selectedServerId} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-96 pl-2">
+          <option value="none" class="dark:text-white" disabled selected>Select a server</option>
+          {#each servers as server}
+            {#if server.verified == true}
+              <option value={server.id} class="dark:text-white">{server.name}</option>
+            {:else}
+              <option value={server.id} class="dark:text-white" disabled>{server.name}</option>
+            {/if}
+          {/each}
+        </select>
+        <button on:click={() => {
+          selectServer(selectedServerId)
+        }} type="submit" class="dark:bg-green-600 bg-green-400 text-white pt-1 pb-1 pr-2 pl-1 mt-2 rounded-lg font-bold w-fit"><ArrowUpRight class="inline mb-1"/> Create post</button>
+      </div>
     {:else}
       <h2 class="text-lg mb-2 dark:text-white mt-4">Fetching server data...</h2>
     {/if}
