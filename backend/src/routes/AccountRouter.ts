@@ -95,7 +95,7 @@ AccountRouter.route('/get').get(authMiddleware, async (req, res) => {
   } 
 })
 
-AccountRouter.route('/getId').get(authMiddleware, async (req, res) => {
+AccountRouter.route('/getId').get(async (req, res) => {
   if (!req.query.id) {
     return res.status(400).json({
       success: false,

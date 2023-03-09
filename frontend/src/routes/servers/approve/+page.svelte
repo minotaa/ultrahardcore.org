@@ -149,7 +149,7 @@
                 <h2 class="text-md dark:text-white">Owner: <strong>{owner.username}</strong></h2>
               {:catch error}
                 <h2 class="text-md dark:text-white">Owner: <strong>Failed...</strong></h2>
-              {/await }
+              {/await}
               <div class="flex flex-row gap-4">
                 <button on:click={deny(server)} class="dark:bg-red-500 bg-red-400 pl-4 pr-4 text-white pt-2 pb-2 mt-2 rounded-lg font-bold"><XCircle class="inline mb-1"/> Deny</button>
                 <button on:click={approve(server)} class="dark:bg-green-500 bg-green-400 pl-4 pr-4 text-white pt-2 pb-2 mt-2 rounded-lg font-bold"><CheckCircle2 class="inline mb-1"/> Approve</button>

@@ -36,7 +36,7 @@ MatchRouter.use(bodyParser.json())
   version: String
 */
 
-MatchRouter.route('/upcoming').get(authMiddleware, async (req, res) => {
+MatchRouter.route('/upcoming').get(async (req, res) => {
   let matches = await Match.find({
     opensAt: {
       $gte: moment().subtract(15, "minutes").toDate()
