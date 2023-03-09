@@ -147,9 +147,14 @@
   let extras: any = {}
   let selectedServerIp: string
   let selectedServerId: string
+  let teamSize: number
+  let teamsStyle: string
+  let slots: number = 80
+  let version: string = "1.8"
+  let error: string[]
 
-  async function postMatch() {
-    await fetch("https://localhost:9000/matches/post", {
+  async function postMatch(e: Event) {
+    let response = await fetch("http://localhost:9000/matches/post", {
       method: 'POST',
       headers: {
         'Authorization': $token,
@@ -157,19 +162,32 @@
       },
       body: JSON.stringify({
         'opensAt': desiredTime.toDate(),
+        'createdBy': user.mId,
         'displayName': displayName,
         'hostCount': hostCount,
         'pvpEnabledIn': pvpEnabledIn,
         'finalHealOccurs': finalHealOccurs,
         'meetupOccursAt': meetupOccursAt,
         'extraRules': customizableRules,
-        'extraOptions': extras,
+        'extraConfig': extras,
         'mapSize': borderSize,
         'server': selectedServerId,
         'scenarios': scenarios,
-        'serverIp': selectedServerIp
+        'serverIp': selectedServerIp,
+        'teamStyle': teamsStyle,
+        'teamSize': teamSize || 1,
+        'slots': slots,
+        'version': version,
+
       })
     })
+    let payload = await response.json()
+    if (!payload.success) {
+      error = payload.errors
+      toast.push("An error occurred while posting your match...")
+    } else {
+      toast.push("Successfully posted your match!")
+    }
   }
 
   function removeScenario(index: number) {
@@ -227,6 +245,39 @@
     }
     loadedYet = true
   })
+
+  let versions = [
+    "1.19",
+    "1.18",
+    "1.17",
+    "1.16",
+    "1.14",
+    "1.13",
+    "1.12",
+    "1.11",
+    "1.10",
+    "1.9",
+    "1.8",
+    "1.7",
+    "1.6",
+    "1.5",
+    "1.4",
+    "1.3",
+    "1.2"
+  ]
+
+  let styles = [
+    "FFA",
+    "Chosen",
+    "Random",
+    "Captains",
+    "Picked",
+    "Auction",
+    "Mystery",
+    "RvB",
+    "Rigged",
+    "Wished"
+  ]
 
   function selectServer(id: string) {
     for (const server of servers) {
@@ -331,85 +382,122 @@
         {/if}
       </div>
     </div>
-    <hr class="border-0 dark:bg-zinc-800 mt-4 mb-4 bg-slate-100 mb-2 h-px"/>
-    <h2 class="font-bold text-2xl dark:text-white mt-4">Game Details</h2>
-    <h2 class="text-xl dark:text-white mb-4">Edit information about the game</h2>
-    <h3 class="text-lg dark:text-white mt-6 mb-2 font-bold">Host Information</h3>
-    <input required bind:value={displayName} placeholder="display name" class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="username" name="username" id="username"/>
-    <input required bind:value={hostCount} placeholder="game count" class="ml-2 dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="hostCount" id="hostCount"/>
-    {#if serverSelected.extraServers && serverSelected.extraServers.length > 0}
-      <h3 class="text-lg dark:text-white mt-6 mb-2 font-bold">Select server</h3>
-      <select bind:value={selectedServerIp} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-96 pl-2">
-        <option value={serverSelected.ip} class="dark:text-white" disabled selected>Hub ({serverSelected.ip})</option>
-        {#each serverSelected.extraServers as extra}
-          <option value={extra.ip} class="dark:text-white">{extra.name} ({extra.ip})</option>
-        {/each}
-      </select>
-    {/if}
-    <h3 class="text-lg dark:text-white mt-8 font-bold">Event Timers</h3>
-    <div class="flex flex-col gap-2">
-      <label for="finalHealOccursIn" class="dark:text-white mt-2">Final Heal occurs in (min.)</label>
-      <input required bind:value={finalHealOccurs} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="finalHealOccursIn" id="finalHealOccursIn"/>
-      <label for="pvpEnabledIn" class="dark:text-white mt-2">PvP enabled in (min.)</label>
-      <input required bind:value={pvpEnabledIn} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="pvpEnabledIn" id="pvpEnabledIn"/>
-      <label for="meetupOccursAt" class="dark:text-white mt-2">Meetup occurs in (min.)</label>
-      <input required bind:value={meetupOccursAt} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="meetupOccursAt" id="meetupOccursAt"/>
-    </div>
-    {#if serverSelected.customizableRules.length > 0}
-      <h3 class="text-lg dark:text-white mt-6 mb-2 font-bold">Game Rules</h3>
+    <form on:submit={postMatch}>
+      <hr class="border-0 dark:bg-zinc-800 mt-4 mb-4 bg-slate-100 mb-2 h-px"/>
+      <h2 class="font-bold text-2xl dark:text-white mt-4">Game Details</h2>
+      <h2 class="text-xl dark:text-white mb-4">Edit information about the game</h2>
+      <h3 class="text-lg dark:text-white mt-6 mb-2 font-bold">General Information</h3>
+      <div class="flex flex-col gap-4">
+        <h2 class="text-lg dark:text-white">Host Information</h2>
+        <div class="flex flex-row gap-4">
+          <input required bind:value={displayName} placeholder="display name" class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="username" name="username" id="username"/>
+          <input required bind:value={hostCount} placeholder="game count" class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="hostCount" id="hostCount"/>
+        </div>
+        <h2 class="text-lg dark:text-white">Server Information</h2>
+        <div class="flex flex-row gap-4">
+          <input required bind:value={slots} placeholder="slots" class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-20" type="number" name="hostCount" id="hostCount"/>
+          <select bind:value={version} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-96 pl-2">
+            <option value={null} class="dark:text-white" disabled selected>Select a server version</option>
+            {#each versions as ver}
+              <option value={ver} class="dark:text-white">{ver}</option>
+            {/each}
+          </select>
+        </div>
+        <h2 class="text-lg dark:text-white">Teams</h2>
+        <div class="flex flex-row gap-4">
+          <select bind:value={teamsStyle} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-96 pl-2">
+            <option value={null} class="dark:text-white" disabled selected>Select a team style</option>
+            {#each styles as style}
+              <option value={style.toLowerCase()} class="dark:text-white">{style}</option>
+            {/each}
+          </select>
+          {#if teamsStyle != null && teamsStyle.toLowerCase() != "ffa"}
+            <input required bind:value={teamSize} placeholder="team size" class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="hostCount" id="hostCount"/>
+          {/if}
+        </div>
+      </div>
+
+      {#if serverSelected.extraServers && serverSelected.extraServers.length > 0}
+        <h3 class="text-lg dark:text-white mt-6 mb-2 font-bold">Select server</h3>
+        <select bind:value={selectedServerIp} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-96 pl-2">
+          <option value={serverSelected.ip} class="dark:text-white" selected>Hub ({serverSelected.ip})</option>
+          {#each serverSelected.extraServers as extra}
+            <option value={extra.ip} class="dark:text-white">{extra.name} ({extra.ip})</option>
+          {/each}
+        </select>
+      {/if}
+      <h3 class="text-lg dark:text-white mt-8 font-bold">Event Timers</h3>
       <div class="flex flex-col gap-2">
-        {#each customizableRules as rule}
+        <label for="finalHealOccursIn" class="dark:text-white mt-2">Final Heal occurs in (min.)</label>
+        <input required bind:value={finalHealOccurs} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="finalHealOccursIn" id="finalHealOccursIn"/>
+        <label for="pvpEnabledIn" class="dark:text-white mt-2">PvP enabled in (min.)</label>
+        <input required bind:value={pvpEnabledIn} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="pvpEnabledIn" id="pvpEnabledIn"/>
+        <label for="meetupOccursAt" class="dark:text-white mt-2">Meetup occurs in (min.)</label>
+        <input required bind:value={meetupOccursAt} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="meetupOccursAt" id="meetupOccursAt"/>
+      </div>
+      {#if serverSelected.customizableRules.length > 0}
+        <h3 class="text-lg dark:text-white mt-6 mb-2 font-bold">Game Rules</h3>
+        <div class="flex flex-col gap-2">
+          {#each customizableRules as rule}
+            <div class="flex flex-row gap-2">
+              <label class="mt-2 dark:text-white">{rule.rule.name}</label>
+              <select bind:value={rule.status} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-40 pl-2">
+                <option value={false} class="dark:text-white" selected>Not allowed</option>
+                <option value={true} class="dark:text-white" selected>Allowed</option>
+              </select>
+              {#if rule.rule.allowHostsToType == true}
+                <input bind:value={rule.note} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-60" type="text" name="extraNote" id="extraNote"/>
+              {/if}
+            </div>
+          {/each}
+        </div>
+      {/if}
+      <h3 class="text-lg dark:text-white mt-6 mb-2 font-bold">Game Configuration</h3>
+      <div class="flex flex-col gap-2">
+        <div class="flex flex-row gap-2">
+          <label for="meetupOccursAt" class="mt-2 dark:text-white">Map size (diameter)</label>
+          <input required bind:value={borderSize} placeholder="game count" class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="borderSize" id="borderSize"/>
+        </div>
+        {#each serverSelected.configOptions as extra} 
           <div class="flex flex-row gap-2">
-            <label class="mt-2 dark:text-white">{rule.rule.name}</label>
-            <select bind:value={rule.status} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-40 pl-2">
-              <option value={false} class="dark:text-white" selected>Not allowed</option>
-              <option value={true} class="dark:text-white" selected>Allowed</option>
-            </select>
-            {#if rule.rule.allowHostsToType == true}
-              <input required bind:value={rule.note} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-60" type="text" name="extraNote" id="extraNote"/>
+            {#if extra.type == "bool"}
+              <label class="mt-2 dark:text-white">{extra.name}</label>
+              <select bind:value={extras[extra.name]} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-40 pl-2">
+                <option value={false} class="dark:text-white" selected>Disabled</option>
+                <option value={true} class="dark:text-white" selected>Enabled</option>
+              </select>
+            {:else if extra.type == "number"}
+              <label class="mt-2 dark:text-white">{extra.name}</label>
+              <input required bind:value={extras[extra.name]} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="finalHealOccursIn" id="finalHealOccursIn"/>
+            {:else if extra.type == "percent"}
+              <label class="mt-2 dark:text-white">{extra.name}</label>
+              <input required bind:value={extras[extra.name]} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="finalHealOccursIn" id="finalHealOccursIn" min="0" max="100"/>
+            {:else if extra.type == "text"}
+              <label class="mt-2 dark:text-white">{extra.name}</label>
+              <input required bind:value={extras[extra.name]} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="text" name="finalHealOccursIn" id="finalHealOccursIn"/>
+              
             {/if}
           </div>
         {/each}
+        <label for="meetupOccursAt" class="mt-2 dark:text-white text-lg font-bold">Scenarios</label>
+        <ul>
+          {#each scenarios as scenario, index} 
+            <li>
+              <div class="pt-1 pr-2 pb-1 flex flex-row gap-4 w-auto hideable rounded-lg">
+                <input on:keydown={handleScenKeyPress} bind:value={scenarios[index]} class="w-1/4 shadow dark:text-white dark:bg-slate-700 bg-slate-100 rounded-lg pt-2 pb-2 pl-2 w-60" placeholder="scenario" type="text" name="scenario" id="scenario" required/>
+                <button on:click={() => { removeScenario(index) }} class="hidden hoverHidden inline text-gray-100"><X class="inline"/></button>
+              </div>
+            </li>
+          {/each}
+          <button on:click={addScenario} class="w-fit mt-2 inline bg-green-400 dark:bg-green-500 text-md text-white pl-2 pr-2 pt-1 pb-1 rounded-lg"><PlusCircle class="mb-1 inline"/> Add Scenarios</button>
+        </ul>
       </div>
-    {/if}
-    <h3 class="text-lg dark:text-white mt-6 mb-2 font-bold">Game Configuration</h3>
-    <div class="flex flex-col gap-2">
-      <div class="flex flex-row gap-2">
-        <label for="meetupOccursAt" class="mt-2 dark:text-white">Map size (diameter)</label>
-        <input required bind:value={borderSize} placeholder="game count" class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="borderSize" id="borderSize"/>
-      </div>
-      {#each serverSelected.configOptions as extra} 
-        <div class="flex flex-row gap-2">
-          {#if extra.type == "bool"}
-            <label class="mt-2 dark:text-white">{extra.name}</label>
-            <select bind:value={extras[extra.name]} required name="serverRegion" id="serverRegion" class="dark:text-white dark:text-white shadow dark:bg-slate-700 rounded-lg bg-slate-100 pt-2 pb-2 w-40 pl-2">
-              <option value={false} class="dark:text-white" selected>Disabled</option>
-              <option value={true} class="dark:text-white" selected>Enabled</option>
-            </select>
-          {:else if extra.type == "number"}
-            <label class="mt-2 dark:text-white">{extra.name}</label>
-            <input required bind:value={extras[extra.name]} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="finalHealOccursIn" id="finalHealOccursIn"/>
-          {:else if extra.type == "percent"}
-            <label class="mt-2 dark:text-white">{extra.name}</label>
-            <input required bind:value={extras[extra.name]} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-2 w-40" type="number" name="finalHealOccursIn" id="finalHealOccursIn" min="0" max="100"/>
-          {/if}
-        </div>
-      {/each}
-      <label for="meetupOccursAt" class="mt-2 dark:text-white text-lg font-bold">Scenarios</label>
-      <ul>
-        {#each scenarios as scenario, index} 
-          <li>
-            <div class="pt-1 pr-2 pb-1 flex flex-row gap-4 w-auto hideable rounded-lg">
-              <input on:keydown={handleScenKeyPress} bind:value={scenarios[index]} class="w-1/4 shadow dark:text-white dark:bg-slate-700 bg-slate-100 rounded-lg pt-2 pb-2 pl-2 w-60" placeholder="scenario" type="text" name="scenario" id="scenario" required/>
-              <button on:click={() => { removeScenario(index) }} class="hidden hoverHidden inline text-gray-100"><X class="inline"/></button>
-            </div>
-          </li>
-        {/each}
-        <button on:click={addScenario} class="w-fit mt-2 inline bg-green-400 dark:bg-green-500 text-md text-white pl-2 pr-2 pt-1 pb-1 rounded-lg"><PlusCircle class="mb-1 inline"/> Add Scenarios</button>
-      </ul>
-    </div>
-    <h2 class="font-bold text-2xl dark:text-white mt-4">Matchpost Conflicts</h2>
-    <button on:click={postMatch} class="w-fit inline bg-green-400 dark:bg-green-500 text-md text-white pl-2 pr-2 pt-1 pb-1 rounded-lg"><Milestone class="mb-1 inline"/> Create Match</button>
+      <h2 class="font-bold text-2xl dark:text-white mt-4">Matchpost Conflicts</h2>
+      {#if error != null}
+          <h2 class="text-center text-md bg-red-100 dark:bg-red-500 shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4"><strong>Errors:</strong> {error.join(', ')}</h2>
+      {/if}
+      <button type="submit" class="w-fit inline bg-green-400 dark:bg-green-500 text-md text-white pl-2 pr-2 pt-1 pb-1 rounded-lg"><Milestone class="mb-1 inline"/> Create Match</button>
+    </form>
   {:else}
     {#if loadedYet == true}
       <h2 class="text-xl mb-2 dark:text-white mt-4">Select server to host from</h2>

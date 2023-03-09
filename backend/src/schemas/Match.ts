@@ -9,15 +9,20 @@ const MatchSchema: Schema = new Schema({
   removedReason: String,
   removed: Boolean,
   mapSize: Number,
-  pvpEnabledAt: Number,
-  finalHealAt: Number,
-  meetupAt: Number,
+  pvpEnabledIn: Number,
+  finalHealOccurs: Number,
+  meetupOccursAt: Number,
   extraRules: Array,
   extraConfig: Object,
   scenarios: Array,
-  count: Number,
+  hostCount: Number,
   displayName: String,
-  serverIp: String
+  serverIp: String,
+  teamStyle: String,
+  teamSize: Number,
+  slots: Number,
+  version: String,
+  id: String
 })
 
 export default mongoose.model('match', MatchSchema)

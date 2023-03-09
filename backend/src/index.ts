@@ -31,6 +31,6 @@ app.use(cors())
 app.use('/', RootRouter)
 app.use('/server', ServerRouter)
 app.use('/account', AccountRouter)
-app.use('/match', MatchRouter)
+app.use('/matches', MatchRouter)
 
 app.listen(process.env.SERVER_PORT, () => logger.info(`Listening on port ${process.env.SERVER_PORT}.`))
