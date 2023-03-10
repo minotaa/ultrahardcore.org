@@ -4,9 +4,10 @@ import { authMiddleware } from '../middleware/UserMiddleware'
 import Match from '../schemas/Match'
 import Server from '../schemas/Server'
 import Session from '../schemas/Session'
-import User from '../schemas/User'
+import User, { Member } from '../schemas/User'
 import moment from 'moment'
 import { customAlphabet } from 'nanoid'
+import { ObjectId } from 'mongoose'
 
 const nano = customAlphabet('1234567890abcdef', 10)
 const MatchRouter = Router()
@@ -104,31 +105,40 @@ MatchRouter.route('/post').post(authMiddleware, async (req, res) => {
       errors: "You need to provide a valid server"
     })
   }
-  let match = new Match({
-    createdAt: new Date(),
-    opensAt: new Date(req.body.opensAt),
-    createdBy: req.body.createdBy,
-    removed: false,
-    mapSize: req.body.mapSize,
-    pvpEnabledIn: req.body.pvpEnabledIn,
-    finalHealOccurs: req.body.finalHealOccurs,
-    meetupOccursAt: req.body.meetupOccursAt,
-    extraRules: req.body.extraRules,
-    extraConfig: req.body.extraConfig,
-    scenarios: req.body.scenarios,
-    hostCount: req.body.hostCount,
-    displayName: req.body.displayName,
-    serverIp: req.body.serverIp,
-    teamStyle: req.body.teamStyle,
-    teamSize: req.body.teamSize,
-    slots: req.body.slots,
-    version: req.body.version,
-    id: nano()
-  })
-  await match.save()
-  return res.json({ 
-    success: true,
-    match: match
+  for (const member of server.members) {
+    if ((member as Member).memberId == (user._id as ObjectId).toString()) {
+      let match = new Match({
+        createdAt: new Date(),
+        opensAt: new Date(req.body.opensAt),
+        createdBy: req.body.createdBy,
+        removed: false,
+        mapSize: req.body.mapSize,
+        pvpEnabledIn: req.body.pvpEnabledIn,
+        finalHealOccurs: req.body.finalHealOccurs,
+        meetupOccursAt: req.body.meetupOccursAt,
+        extraRules: req.body.extraRules,
+        extraConfig: req.body.extraConfig,
+        scenarios: req.body.scenarios,
+        hostCount: req.body.hostCount,
+        displayName: req.body.displayName,
+        serverIp: req.body.serverIp,
+        teamStyle: req.body.teamStyle,
+        teamSize: req.body.teamSize,
+        slots: req.body.slots,
+        version: req.body.version,
+        id: nano(),
+        serverId: req.body.server
+      })
+      await match.save()
+      return res.json({ 
+        success: true,
+        match: match
+      })   
+    }
+  }
+  return res.status(401).json({
+    success: false,
+    errors: ["You aren't a member of this server."]
   })
 })
 

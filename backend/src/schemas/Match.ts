@@ -22,7 +22,8 @@ const MatchSchema: Schema = new Schema({
   teamSize: Number,
   slots: Number,
   version: String,
-  id: String
+  id: String,
+  serverId: String
 })
 
 export default mongoose.model('match', MatchSchema)

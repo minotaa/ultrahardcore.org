@@ -166,7 +166,7 @@ ServerRouter.route('/approve').post(authMiddleware, async(req, res) => {
   })
 })
 
-ServerRouter.route('/get').get(authMiddleware, async (req, res) => {
+ServerRouter.route('/get').get(async (req, res) => {
   if (!req.query.server) return res.send('You did not provide a valid server ID.')
   let server = await Server.findOne({
     id: req.query.server
