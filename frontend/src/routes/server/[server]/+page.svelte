@@ -195,14 +195,14 @@
         </div>
       </div>
     {/if}
-    <h2 class="pt-2 font-bold text-3xl dark:text-white">{server.name}</h2>
-    <h3 class="pt-2 text-xl dark:text-white">Region: <strong>{getRegion(server.region)}</strong> | Location: <strong>{server.location}</strong></h3>
+    <h2 class="pt-4 font-bold text-3xl dark:text-white">{server.name}</h2>
+    <h3 class="pt-2 text-xl dark:text-white">Region: <strong>{getRegion(server.region)}</strong> • Location: <strong>{server.location}</strong></h3>
     {#await getOwner(server.owner)}
-      <h2 class="text-xl dark:text-white">Owner: <strong>Fetching...</strong> | Members: <strong>{server.members.length}</strong></h2>
+      <h2 class="text-xl dark:text-white">Owner: <strong>Fetching...</strong> • Members: <strong>{server.members.length}</strong></h2>
     {:then owner}
-      <h2 class="text-xl dark:text-white">Owner: <strong>{owner.username}</strong> | Members: <strong>{server.members.length}</strong></h2>
+      <h2 class="text-xl dark:text-white">Owner: <strong>{owner.username}</strong> • Members: <strong>{server.members.length}</strong></h2>
     {:catch error}
-      <h2 class="text-xl dark:text-white">Owner: <strong>Failed...</strong> | Members: <strong>{server.members.length}</strong></h2>
+      <h2 class="text-xl dark:text-white">Owner: <strong>Failed...</strong> • Members: <strong>{server.members.length}</strong></h2>
     {/await}
     {#if server.extraServers && server.extraServers.length > 0}
       <h3 class="pt-2 text-xl dark:text-white"><strong>Servers:</strong></h3>
