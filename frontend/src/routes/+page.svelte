@@ -3,7 +3,7 @@
   import Navbar from "../components/Navbar.svelte";
   import Footer from "../components/Footer.svelte";
   import { onMount } from "svelte";
-  import { RefreshCcw } from "lucide-svelte";
+  import { RefreshCcw, Ruler, PersonStanding, Dice6, Binary, AlarmClock } from "lucide-svelte";
   import moment from "moment";
 
   let matches: any[] = []
@@ -81,23 +81,26 @@
   {#if matches.length > 0}
     <div class="gap-4 flex grid grid-flow-row-dense grid-cols-3">
       {#each matches as match}
-        <div class="shadow dark:bg-zinc-800 rounded-lg bg-slate-100 pl-4 pt-4 pb-4 w-auto hover:scale-105">
-          {#if match.teamStyle != "ffa"}
-            <h2 class="text-lg dark:text-white font-bold">{match.displayName}'s #{match.hostCount} - {getTeamStyle(match.teamStyle)} To{match.teamSize}</h2>
-          {:else}
-            <h2 class="text-lg dark:text-white font-bold">{match.displayName}'s #{match.hostCount} - {getTeamStyle(match.teamStyle)}</h2>
-          {/if}
-          <p class="text-md dark:text-white break-normal">Scenarios: <code class="text-md dark:text-white">{match.scenarios.join(', ')}</code></p>
-          <p class="text-md dark:text-white">Border: <code>{match.mapSize}x{match.mapSize}</code></p>
-          <p class="text-md dark:text-white">Server IP: <code>{match.serverIp}</code></p>
-          <p class="text-md pb-2 dark:text-white">Slots: <code>{match.slots}</code></p>
-          {#await getServer(match.serverId)}
-            <h3 class="text-sm dark:text-white">Fetching server...</h3>
+        <div class="shadow dark:bg-zinc-800 rounded-lg bg-slate-100 pl-4 pt-4 pb-4 w-auto">
+          <div class="flex flex-row gap-2">
+            <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow w-fit" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>Opens <strong>{moment(match.opensAt).fromNow()}</strong></p>
+            <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow w-fit">{match.version}</p>
+            {#if match.teamStyle != "ffa" && match.teamStyle != "auction"}
+              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow w-fit">{getTeamStyle(match.teamStyle)} To{match.teamSize}</p>
+            {:else}
+              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow w-fit">{getTeamStyle(match.teamStyle)}</p>
+            {/if}
+          </div>
+          <h2 class="mt-2 text-lg dark:text-white font-bold mb-2">{match.displayName}'s #{match.hostCount}</h2>
+          <p class="text-md dark:text-white break-normal"><Dice6 class="mb-1 mr-2 inline"/>Scenarios: <code class="text-md dark:text-white">{match.scenarios.join(', ')}</code></p>
+          <p class="text-md dark:text-white"><Ruler class="mb-1 mr-2 inline"/>Border: <code>{match.mapSize}x{match.mapSize}</code></p>
+          <p class="text-md dark:text-white"><Binary class="mb-1 mr-2 inline"/>Server IP: <code>{match.serverIp}</code> {#await getServer(match.serverId)}
+            <h3 class="text-md dark:text-white inline">(Fetching server...)</h3>
           {:then server}
-            <h3 class="text-sm dark:text-white">Hosted on <a href="/server/{server.id}" class="hover:underline font-bold text-sky-300 dark:text-sky-500">{server.name}</a></h3>
-          {/await}
-          <h3 class="text-sm italic font-bold dark:text-white mt-2"><strong>Final Heal: {match.finalHealOccurs}m / PvP: {match.pvpEnabledIn}m / Meetup: {match.meetupOccursAt}m</strong></h3>
-          <h3 class="text-sm dark:text-slate-200 italic">Opens <strong>{moment(match.opensAt).fromNow()}</strong> | Version: <strong>{match.version}</strong></h3>
+            <h3 class="text-md dark:text-white inline">(Hosted on <a href="/server/{server.id}" class="hover:underline font-bold text-sky-300 dark:text-sky-500">{server.name}</a>)</h3>
+          {/await}</p>
+          <p class="text-md dark:text-white"><PersonStanding class=" mr-2 inline"/>Slots: <code>{match.slots}</code></p>
+          <h3 class="text-md dark:text-white"><AlarmClock class="mb-1 inline"/>&nbsp; Final Heal: {match.finalHealOccurs}m / PvP: {match.pvpEnabledIn}m / Meetup: {match.meetupOccursAt}m</h3>
         </div>
       {/each}
     </div>

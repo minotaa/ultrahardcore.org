@@ -28,7 +28,8 @@
     websiteUrl: string,
     extraLinks: object[],
     customizableRules: object[],
-    configOptions: object[]
+    configOptions: object[],
+    optionalConfiguration: boolean
   }
 
   let server: Server
@@ -195,8 +196,13 @@
         </ul>
         <button on:click={createCustom} class="w-20 inline bg-green-400 dark:bg-green-500 text-md text-white pl-2 pr-2 pt-1 pb-1 rounded-lg"><PlusCircle class="mb-1 inline"/> Add</button>
       {/if}
+      <h2 class="pt-4 mt-4 font-bold text-2xl dark:text-white">Optional Config</h2>
+      <h3 class="text-lg dark:text-white">Allow hosts to not put a pre-set configuration, this is preferable for hosts who prefer to setup their game configuration during the game.</h3>
+      <div class="flex flex-row">
+        <input bind:checked={server.optionalConfiguration} class="inline" type="checkbox" name="optionalConfiguration" id="optionalConfiguration"> <label class="dark:text-white mt-2 mb-1 ml-2 inline" for="optionalConfiguration">Allow hosts to not put a game configuration</label>
+      </div>
       <h2 class="pt-4 mt-4 font-bold text-2xl dark:text-white">Game Rules</h2>
-      <h3 class="text-lg w-3/5 dark:text-white">Add/remove game rules for hosts to customize while posting (e.g. add Crossteaming to allow hosts to customize Crossteaming rules).</h3>
+      <h3 class="text-lg dark:text-white">Add/remove game rules for hosts to customize while posting (e.g. add Crossteaming to allow hosts to customize Crossteaming rules).</h3>
       {#if server.customizableRules.length == 0}
         <h2 class="text-lg dark:text-white mt-2 text-gray-500 dark:text-gray-100">You have no custom rules.&nbsp; <button on:click={createRule} class="inline bg-green-400 dark:bg-green-500 text-md text-white pl-2 pr-2 pt-1 pb-1 rounded-lg"><PlusCircle class="mb-1 inline"/> Add</button></h2>
       {:else}

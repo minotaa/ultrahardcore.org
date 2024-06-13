@@ -23,7 +23,8 @@ const MatchSchema: Schema = new Schema({
   slots: Number,
   version: String,
   id: String,
-  serverId: String
+  serverId: String,
+  description: String,
 })
 
 export default mongoose.model('match', MatchSchema)
