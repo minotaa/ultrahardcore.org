@@ -100,7 +100,7 @@
             <h3 class="text-md dark:text-white inline">(Hosted on <a href="/server/{server.id}" class="hover:underline font-bold text-sky-300 dark:text-sky-500">{server.name}</a>)</h3>
           {/await}</p>
           <p class="text-md dark:text-white"><PersonStanding class=" mr-2 inline"/>Slots: <code>{match.slots}</code></p>
-          <h3 class="text-md dark:text-white"><AlarmClock class="mb-1 inline"/>&nbsp; Final Heal: {match.finalHealOccurs}m / PvP: {match.pvpEnabledIn}m / Meetup: {match.meetupOccursAt}m</h3>
+          <h3 class="text-md dark:text-white"><AlarmClock class="mb-1 inline"/>&nbsp; Final Heal: {match.finalHealOccurs}m • PvP: {match.pvpEnabledIn}m • Meetup: {match.meetupOccursAt}m</h3>
         </div>
       {/each}
     </div>
