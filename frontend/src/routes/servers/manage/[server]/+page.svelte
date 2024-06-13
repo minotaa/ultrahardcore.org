@@ -22,6 +22,7 @@
     verified: boolean,
     extraServers: object[],
     discordUrl: string,
+    storeUrl: string,
     twitterUrl: string,
     scenarioDescriptions: string,
     websiteUrl: string,
@@ -173,6 +174,8 @@
       <label for="twitterUrl" class="font-bold mt-2 dark:text-white">Twitter Profile:</label>
       <input required bind:value={server.twitterUrl} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="url" name="twitterLink" id="twitterLink"/>
       <label for="scenarioExplanationsWebsite" class="font-bold mt-2 dark:text-white">Scenario Explanations Website:</label>
+      <input required bind:value={server.storeUrl} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="url" name="storeLink" id="storeLink"/>
+      <label for="storeLink" class="font-bold mt-2 dark:text-white">Store:</label>
       <input required bind:value={server.scenarioDescriptions} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="url" name="scenarioExplanationsLink" id="scenarioExplanationsLink"/>
       <label for="websiteUrl" class="font-bold mt-2 dark:text-white">Website:</label>
       <input required bind:value={server.websiteUrl} class="dark:text-white shadow dark:bg-slate-700 bg-slate-100 gap-2 rounded-lg pt-2 pb-2 pl-2 pr-8 w-96" type="url" name="websiteUrl" id="websiteUrl"/>

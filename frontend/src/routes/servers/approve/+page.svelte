@@ -15,13 +15,21 @@
     address: string,
     location: string, 
     region: string,
-    scenarioDescriptions: string,
     members: object[],
     createdAt: Date,
     owner: string,
     id: string,
     invited: string[],
-    verified: boolean
+    verified: boolean,
+    extraServers: object[],
+    discordUrl: string,
+    storeUrl: string,
+    twitterUrl: string,
+    scenarioDescriptions: string,
+    websiteUrl: string,
+    extraLinks: object[],
+    customizableRules: object[],
+    configOptions: object[]
   }
 
   let servers: Server[]

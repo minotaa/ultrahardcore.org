@@ -17,6 +17,7 @@ const ServerSchema: Schema = new Schema({
   discordUrl: String,
   twitterUrl: String,
   websiteUrl: String,
+  storeUrl: String,
   extraLinks: Array,
   configOptions: Array,
   customizableRules: Array,
