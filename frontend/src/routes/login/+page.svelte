@@ -54,7 +54,9 @@
     }
     if (browser) {
       token.set(payload.session)
-      goto('/')
+      setTimeout(() => {
+        goto('/')
+      }, 500)
       toast.push(`Successfully logged in!`)
     }
   }
