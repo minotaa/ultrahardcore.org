@@ -56,7 +56,9 @@
     }
     if (user) {
       toast.push("You're already logged in!")
-      goto('/')
+      setTimeout(() => {
+        goto('/')
+      }, 500)
     }
   })
 </script>
