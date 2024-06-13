@@ -83,7 +83,13 @@
       {#each matches as match}
         <div class="shadow dark:bg-zinc-800 rounded-lg bg-slate-100 pl-4 pt-4 pb-4 w-auto">
           <div class="flex flex-row gap-2">
-            <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow w-fit" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>Opens <strong>{moment(match.opensAt).fromNow()}</strong></p>
+            {#if (Math.abs(moment().diff(moment(match.opensAt), 'minutes')) <= 15)}
+              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-red-600 shadow w-fit" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>Opens <strong>{moment(match.opensAt).fromNow()}</strong></p>
+            {:else if (Math.abs(moment().diff(moment(match.opensAt), 'minutes')) <= 30)}
+              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-yellow-500 shadow w-fit" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>Opens <strong>{moment(match.opensAt).fromNow()}</strong></p>
+            {:else}
+              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-green-500 shadow w-fit" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>Opens <strong>{moment(match.opensAt).fromNow()}</strong></p>
+            {/if}
             <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow w-fit">{match.version}</p>
             {#if match.teamStyle != "ffa" && match.teamStyle != "auction"}
               <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow w-fit">{getTeamStyle(match.teamStyle)} To{match.teamSize}</p>
