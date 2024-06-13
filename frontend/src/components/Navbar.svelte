@@ -1,6 +1,6 @@
 <script lang="ts">
   import "../app.css"
-  import { Clock, ChevronDown, Server, ServerCrash, UserMinus, Wrench } from 'lucide-svelte'
+  import { Clock, ChevronDown, Server, ServerCrash, UserMinus, Wrench, StickyNote } from 'lucide-svelte'
   import moment from 'moment'
   import { readable, writable } from 'svelte/store'
   import { token } from "../hooks/auth"
@@ -64,6 +64,7 @@
         <div id="dropdownHover" class="w-auto absolute dark:bg-slate-700 dropdown-menu z-50 hidden bg-slate-200 divide-y divide-gray-100 rounded shadow">
           <ul aria-labelledby="userDropdownButton">
             <a href="/servers"><li class="block text-sm px-4 py-2 dark:hover:bg-slate-800 dark:text-white dark:bg-slate-700 hover:bg-slate-300"><Server class="inline"/>&nbsp; Your servers</li></a>
+            <a href="/host"><li class="block text-sm px-4 py-2 dark:hover:bg-slate-800 dark:text-white dark:bg-slate-700 hover:bg-slate-300"><StickyNote class="inline"/>&nbsp; Create a match</li></a>
             <li on:click={logOut} class="block text-sm px-4 py-2 dark:hover:bg-slate-800 dark:text-white hover:bg-slate-300"><UserMinus class="inline"/>&nbsp; Log out</li>
           </ul>
         </div>
