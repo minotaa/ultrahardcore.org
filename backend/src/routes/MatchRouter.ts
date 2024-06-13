@@ -49,6 +49,24 @@ MatchRouter.route('/upcoming').get(async (req, res) => {
   })
 })
 
+MatchRouter.route('/get').get(async (req, res) => {
+  if (!req.query.match) return res.send('You did not provide a valid match ID.')
+    let match = await Match.findOne({
+      id: req.query.match
+    }).exec()
+  if (match) {
+    return res.json({
+      success: true,
+      match: match
+    })
+  } else {
+    return res.status(404).json({
+      success: false,
+      errors: ['Could not find match']
+    })
+  }
+})
+
 MatchRouter.route('/post').post(authMiddleware, async (req, res) => {
   let errors = []
   if (!req.body) errors.push("You need to provide a body")

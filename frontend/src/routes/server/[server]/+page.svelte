@@ -7,6 +7,7 @@
   import Footer from '../../../components/Footer.svelte';
   import { Twitter, Gamepad, Newspaper, Laptop, Link, CheckCircle2, XCircle, ShoppingBag, Ruler, PersonStanding, Dice6, Binary, AlarmClock } from 'lucide-svelte';
   import moment from 'moment';
+    import { error } from '@sveltejs/kit';
 
   interface Server {
     name: string,
@@ -65,6 +66,9 @@
         extraServers.push(`Hub (${server.ip})`)
       }
     } else {
+      error(404, {
+        message: 'Not found'
+      })
       goto('/')
       toast.push("Invalid server ID!")
     }
@@ -274,7 +278,7 @@
           <p class="text-md dark:text-white"><Ruler class="mb-1 mr-2 inline"/>Border: <code>{match.mapSize}x{match.mapSize}</code></p>
           <p class="text-md dark:text-white"><Binary class="mb-1 mr-2 inline"/>Server IP: <code>{match.serverIp}</code>
           <p class="text-md dark:text-white"><PersonStanding class=" mr-2 inline"/>Slots: <code>{match.slots}</code></p>
-          <h3 class="text-md dark:text-white"><AlarmClock class="mb-1 inline"/>&nbsp; Final Heal: {match.finalHealOccurs}m • PvP: {match.pvpEnabledIn}m • Meetup: {match.meetupOccursAt}m</h3>
+          <h3 class="text-md dark:text-white"><AlarmClock class="mb-1 inline"/>&nbsp; Final Heal: <strong>{match.finalHealOccurs}m</strong> • PvP: <strong>{match.pvpEnabledIn}m</strong> • Meetup: <strong>{match.meetupOccursAt}m</strong></h3>
         </div>
       {/each}
     </div>
