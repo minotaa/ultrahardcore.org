@@ -29,7 +29,8 @@
     websiteUrl: string,
     extraLinks: object[],
     customizableRules: object[],
-    configOptions: object[]
+    configOptions: object[],
+    optionalConfiguration: boolean
   }
 
   let servers: Server[]

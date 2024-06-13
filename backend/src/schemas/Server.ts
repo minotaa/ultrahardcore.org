@@ -19,6 +19,7 @@ const ServerSchema: Schema = new Schema({
   websiteUrl: String,
   storeUrl: String,
   extraLinks: Array,
+  optionalConfiguration: Boolean,
   configOptions: Array,
   customizableRules: Array,
   extraServers: Array,
