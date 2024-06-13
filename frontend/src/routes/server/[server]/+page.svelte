@@ -5,8 +5,8 @@
   import { onMount } from 'svelte';
   import { token } from '../../../hooks/auth';
   import Footer from '../../../components/Footer.svelte';
-  import { Twitter, Gamepad, Newspaper, Laptop, Link, CheckCircle2, XCircle } from 'lucide-svelte';
-    import moment from 'moment';
+  import { Twitter, Gamepad, Newspaper, Laptop, Link, CheckCircle2, XCircle, ShoppingBag } from 'lucide-svelte';
+  import moment from 'moment';
 
   interface Server {
     name: string,
@@ -22,6 +22,7 @@
     verified: boolean,
     extraServers: object[],
     discordUrl: string,
+    storeUrl: string,
     twitterUrl: string,
     scenarioDescriptions: string,
     websiteUrl: string,
@@ -225,6 +226,9 @@
       {/if}
       {#if server.websiteUrl}
         <a rel="noreferrer" target="_blank" href={server.websiteUrl}><h3 class="pt-4 text-md dark:text-sky-500 text-sky-400"><Laptop class="inline mb-1"/> Website</h3></a>
+      {/if}
+      {#if server.storeUrl}
+        <a rel="noreferrer" target="_blank" href={server.storeUrl}><h3 class="pt-4 text-md dark:text-sky-500 text-sky-400"><ShoppingBag class="inline mb-1"/> Store</h3></a>
       {/if}
       {#if server.extraLinks && server.extraLinks.length > 0}
         {#each server.extraLinks as extra}

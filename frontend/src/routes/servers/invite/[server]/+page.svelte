@@ -21,6 +21,7 @@
     verified: boolean,
     extraServers: object[],
     discordUrl: string,
+    storeUrl: string,
     twitterUrl: string,
     scenarioDescriptions: string,
     websiteUrl: string,
