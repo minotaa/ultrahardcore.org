@@ -93,29 +93,29 @@
 
 <div class="container pl-6">
   <h1 class="pt-4 font-bold text-2xl dark:text-white">Upcoming matches</h1>
-  <h2 class="text-sm dark:text-white mb-4 italic">Last fetched @ {lastFetched.format("HH:mm:ss")}</h2>
+  <h2 class="text-sm dark:text-white mb-4">Last fetched @ {lastFetched.format("HH:mm:ss")}</h2>
   {#if matches.length > 0}
     <div class="gap-4 flex grid grid-flow-row-dense grid-cols-3">
       {#each matches as match}
-        <a class="shadow dark:bg-zinc-800 rounded-lg bg-slate-100 pl-4 pt-4 pb-4 w-auto" href={'/match/' + match.id}>
-          <div class="flex flex-row gap-2">
+        <a class="shadow dark:bg-zinc-800 rounded-lg bg-slate-100 pl-4 pr-6 pt-4 pb-4 w-auto dark:hover:bg-zinc-700 hover:bg-slate-200 transition-colors" href={'/match/' + match.id}>
+          <div class="flex flex-wrap gap-x-2 gap-y-0">
             {#await getServer(match.serverId)}
-              <h3 class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-sky-500 shadow w-fit">Fetching region...</h3>
+              <h3 class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-sky-500 shadow inline">Fetching region...</h3>
             {:then server}
-              <h3 class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-sky-500 shadow w-fit">{getRegion(server.region)}</h3>
+              <h3 class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-sky-500 shadow inline">{getRegion(server.region)}</h3>
             {/await}
             {#if (Math.abs(moment().diff(moment(match.opensAt), 'minutes')) <= 15)}
-              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-red-600 shadow w-fit" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>{moment(match.opensAt) > moment() ? "Opens" : "Opened"} <strong>{moment(match.opensAt).fromNow()}</strong></p>
+              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-red-600 shadow inline" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>{moment(match.opensAt) > moment() ? "Opens" : "Opened"} <strong>{moment(match.opensAt).fromNow()}</strong></p>
             {:else if (Math.abs(moment().diff(moment(match.opensAt), 'minutes')) <= 30)}
-              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-yellow-500 shadow w-fit" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>{moment(match.opensAt) > moment() ? "Opens" : "Opened"} <strong>{moment(match.opensAt).fromNow()}</strong></p>
+              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-yellow-500 shadow inline" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>{moment(match.opensAt) > moment() ? "Opens" : "Opened"} <strong>{moment(match.opensAt).fromNow()}</strong></p>
             {:else}
-              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-green-500 shadow w-fit" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>{moment(match.opensAt) > moment() ? "Opens" : "Opened"} <strong>{moment(match.opensAt).fromNow()}</strong></p>
+              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-green-500 shadow inline" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>{moment(match.opensAt) > moment() ? "Opens" : "Opened"} <strong>{moment(match.opensAt).fromNow()}</strong></p>
             {/if}
-            <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow w-fit">{match.version}</p>
+            <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow">{match.version}</p>
             {#if match.teamStyle != "ffa" && match.teamStyle != "auction" && match.teamStyle != "rvb"}
-              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow w-fit">{getTeamStyle(match.teamStyle)} To{match.teamSize}</p>
+              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow inline">{getTeamStyle(match.teamStyle)} To{match.teamSize}</p>
             {:else}
-              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow w-fit">{getTeamStyle(match.teamStyle)}</p>
+              <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow inline">{getTeamStyle(match.teamStyle)}</p>
             {/if}
           </div>
           <h2 class="mt-2 text-lg dark:text-white font-bold mb-2">{match.displayName}'s #{match.hostCount}</h2>
