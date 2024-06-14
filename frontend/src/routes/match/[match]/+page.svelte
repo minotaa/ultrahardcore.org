@@ -152,5 +152,6 @@
     </div>
   </div>
 {:else}
-  <h1 class="dark:text-white text-2xl font-bold mt-6 pl-2">Fetching data...</h1>
+  <h1 class="dark:text-white text-2xl font-bold mt-6 pl-2 placeholder">Fetching data...</h1>
+  <h2 class="dark:text-white text-xl mt-2 pl-2">Note that if you can see this for more than a second then something is seriously wrong.</h2>
 {/if}
