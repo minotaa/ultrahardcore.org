@@ -40,9 +40,11 @@ MatchRouter.use(bodyParser.json())
 MatchRouter.route('/upcoming').get(async (req, res) => {
   let matches = await Match.find({
     opensAt: {
-      $gte: moment().subtract(15, "minutes").toDate()
+      $gte: moment().subtract(15, "minutes").toDate(),
     }
-  }).exec()
+  })
+  .sort({ opensAt: 'asc' })
+  .exec()
   return res.json({
     success: true,
     matches: matches
