@@ -180,7 +180,7 @@
         'teamSize': teamSize || 1,
         'slots': slots,
         'version': version,
-
+        'hostHidConfig': !showServerConfig
       })
     })
     let payload = await response.json()

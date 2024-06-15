@@ -24,7 +24,8 @@ const MatchSchema: Schema = new Schema({
   version: String,
   id: String,
   serverId: String,
-  description: String
+  description: String,
+  hostHidConfig: Boolean
 })
 
 export default mongoose.model('match', MatchSchema)
