@@ -8,6 +8,7 @@
   import { Twitter, Gamepad, Newspaper, Laptop, Link, CheckCircle2, XCircle, ShoppingBag, Ruler, PersonStanding, Dice6, Binary, AlarmClock } from 'lucide-svelte';
   import moment from 'moment';
     import { error } from '@sveltejs/kit';
+    import { BACKEND_URI } from '$env/static/private';
 
   interface Server {
     name: string,
@@ -37,7 +38,7 @@
   let loadedYet = false
   let extraServers: string[] = []
   onMount(async() => {
-    let response = await fetch(`http://localhost:9000/account/get`, {
+    let response = await fetch(`${BACKEND_URI}/account/get`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -50,7 +51,7 @@
       token.set(undefined)
       user = null
     }
-    response = await fetch(`http://localhost:9000/server/get?server=${await $page.params.server}`, {
+    response = await fetch(`${BACKEND_URI}/server/get?server=${await $page.params.server}`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -94,7 +95,7 @@
   }
 
   async function getOwner(id: string) {
-    const response = await fetch(`http://localhost:9000/account/getId?id=${id}`, {
+    const response = await fetch(`${BACKEND_URI}/account/getId?id=${id}`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -106,7 +107,7 @@
   }
 
   async function denyInvite() {
-    const response = await fetch(`http://localhost:9000/server/denyInvite?server=${server.id}`, {
+    const response = await fetch(`${BACKEND_URI}/server/denyInvite?server=${server.id}`, {
       method: 'POST', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -120,7 +121,7 @@
   }
 
   async function acceptInvite() {
-    const response = await fetch(`http://localhost:9000/server/acceptInvite?server=${server.id}`, {
+    const response = await fetch(`${BACKEND_URI}/server/acceptInvite?server=${server.id}`, {
       method: 'POST', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -137,7 +138,7 @@
   let serverMatches: any[] = []
 
   async function fetchMatches() {
-    let response = await fetch("http://localhost:9000/matches/upcoming", {
+    let response = await fetch("${BACKEND_URI}/matches/upcoming", {
       method: "GET",
     })
     let payload = await response.json()
@@ -183,7 +184,7 @@
   }
 
   async function getServer(id: string) {
-    const response = await fetch(`http://localhost:9000/server/get?server=${id}`, {
+    const response = await fetch(`${BACKEND_URI}/server/get?server=${id}`, {
       method: 'GET' // @ts-ignore
     })
     const payload = await response.json()

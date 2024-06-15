@@ -8,6 +8,7 @@
   import { error } from "@sveltejs/kit";
   import Footer from "../../../components/Footer.svelte";
   import { AlarmClock, Dice6, PersonStanding, Ruler, Copy, Twitter, Newspaper, Laptop, ShoppingBag, Link, Gamepad, Check, X } from "lucide-svelte";
+    import { BACKEND_URI } from "$env/static/private";
 
   interface Match {
     createdAt: Date,
@@ -65,7 +66,7 @@
   let match: Match
   let loadedYet = false
   onMount(async () => {
-    let response = await fetch(`http://localhost:9000/account/get`, {
+    let response = await fetch(`${BACKEND_URI}/account/get`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -78,7 +79,7 @@
       token.set(undefined)
       user = null
     }
-    response = await fetch(`http://localhost:9000/matches/get?match=${await $page.params.match}`, {
+    response = await fetch(`${BACKEND_URI}/matches/get?match=${await $page.params.match}`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -117,7 +118,7 @@
   }
 
   async function getServer(id: string) {
-    const response = await fetch(`http://localhost:9000/server/get?server=${id}`, {
+    const response = await fetch(`${BACKEND_URI}/server/get?server=${id}`, {
       method: 'GET' // @ts-ignore
     })
     const payload = await response.json()

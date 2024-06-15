@@ -8,10 +8,11 @@
   import Footer from "../../components/Footer.svelte";
   import { onMount } from "svelte";
   import { toast } from '@zerodevx/svelte-toast'
+    import { BACKEND_URI } from "$env/static/private";
 
   let user: any
   onMount(async () => {
-    const response = await fetch(`http://localhost:9000/account/get`, {
+    const response = await fetch(`${BACKEND_URI}/account/get`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -36,7 +37,7 @@
   let error: string[]
   async function handleSubmit(e: Event) {
     e.preventDefault()
-    const res = await fetch(`http://localhost:9000/account/login`, {
+    const res = await fetch(`${BACKEND_URI}/account/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

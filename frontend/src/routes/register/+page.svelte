@@ -7,6 +7,7 @@
   import { goto } from "$app/navigation";
   import { token } from "../../hooks/auth";
   import { toast } from "@zerodevx/svelte-toast"
+    import { BACKEND_URI } from "$env/static/private";
 
   let email: string 
   let username: string
@@ -17,7 +18,7 @@
   let success: boolean = false
   async function handleSubmit(e: Event) {
     e.preventDefault()
-    const res = await fetch(`http://localhost:9000/account/register`, {
+    const res = await fetch(`${BACKEND_URI}/account/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -41,7 +42,7 @@
 
   let user: any
   onMount(async () => {
-    const response = await fetch(`http://localhost:9000/account/get`, {
+    const response = await fetch(`${BACKEND_URI}/account/get`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token

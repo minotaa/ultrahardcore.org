@@ -7,10 +7,11 @@
   import { token } from "../../../hooks/auth"
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
+    import { BACKEND_URI } from "$env/static/private";
 
   let user: any
   onMount(async () => {
-    const response = await fetch(`http://localhost:9000/account/get`, {
+    const response = await fetch(`${BACKEND_URI}/account/get`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -38,7 +39,7 @@
   async function handleSubmit(e: Event) {
     e.preventDefault()
     
-    const res = await fetch(`http://localhost:9000/server/create`, {
+    const res = await fetch(`${BACKEND_URI}/server/create`, {
       method: 'POST', // @ts-ignore
       headers: {
         'Content-Type': 'application/json',

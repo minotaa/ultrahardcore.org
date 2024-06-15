@@ -6,10 +6,11 @@
   import { token } from "../hooks/auth"
   import { onMount } from "svelte";
   import { toast } from "@zerodevx/svelte-toast"
+    import { BACKEND_URI } from "$env/static/private";
 
   let user: any
   onMount(async () => {
-    const response = await fetch(`http://localhost:9000/account/get`, {
+    const response = await fetch(`${BACKEND_URI}/account/get`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token

@@ -7,6 +7,7 @@
   import { goto } from '$app/navigation';
   import { PlusCircle, Save, X } from 'lucide-svelte';
   import Footer from '../../../../components/Footer.svelte';
+    import { BACKEND_URI } from '$env/static/private';
 
   interface Server {
     name: string,
@@ -37,7 +38,7 @@
   let loadedYet = false
 
   async function save() {
-    let response = await fetch(`http://localhost:9000/server/edit?server=${server.id}`, {
+    let response = await fetch(`${BACKEND_URI}/server/edit?server=${server.id}`, {
       method: 'POST', // @ts-ignore
       headers: {
         'Authorization': $token,
@@ -56,7 +57,7 @@
   }
 
   onMount(async () => {
-    let response = await fetch(`http://localhost:9000/account/get`, {
+    let response = await fetch(`${BACKEND_URI}/account/get`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -72,7 +73,7 @@
       goto('/')
       toast.push("You're not logged in!")
     }
-    response = await fetch(`http://localhost:9000/server/get?server=${await $page.params.server}`, {
+    response = await fetch(`${BACKEND_URI}/server/get?server=${await $page.params.server}`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -85,7 +86,7 @@
       goto('/servers')
       toast.push("Invalid server ID!")
     }
-    response = await fetch(`http://localhost:9000/server/getMember?user=${user.mId}&server=${server.id}`, {
+    response = await fetch(`${BACKEND_URI}/server/getMember?user=${user.mId}&server=${server.id}`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token

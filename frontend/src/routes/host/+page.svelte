@@ -8,6 +8,7 @@
   import { token } from "../../hooks/auth";
   import { goto } from "$app/navigation";
   import { toast } from "@zerodevx/svelte-toast";
+    import { BACKEND_URI } from "$env/static/private";
 
   function toNearest15Minutes(date: Date) {
     const start = moment(date)
@@ -104,7 +105,7 @@
       errors.push("Your time must be 30 minutes in advance.")
       return
     }
-    let response = await fetch(`http://localhost:9000/matches/conflicts`, {
+    let response = await fetch(`${BACKEND_URI}/matches/conflicts`, {
       method: 'POST', // @ts-ignore
       headers: {
         'Authorization': $token,
@@ -181,7 +182,7 @@
   async function postMatch(e: Event) {
     await checkConflicts()
     if (!canPost) return
-    let response = await fetch("http://localhost:9000/matches/post", {
+    let response = await fetch(`${BACKEND_URI}/matches/post`, {
       method: 'POST',
       headers: {
         'Authorization': $token,
@@ -262,7 +263,7 @@
   }
 
   async function getServer(id: string) {
-    const response = await fetch(`http://localhost:9000/server/get?server=${id}`, {
+    const response = await fetch(`${BACKEND_URI}/server/get?server=${id}`, {
       method: 'GET' // @ts-ignore
     })
     const payload = await response.json()
@@ -291,7 +292,7 @@
 
   onMount(async () => {
     loadedYet = false
-    let response = await fetch(`http://localhost:9000/account/get`, {
+    let response = await fetch(`${BACKEND_URI}/account/get`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -304,7 +305,7 @@
       token.set(undefined)
       user = null
     }
-    response = await fetch(`http://localhost:9000/account/servers`, {
+    response = await fetch(`${BACKEND_URI}/account/servers`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
