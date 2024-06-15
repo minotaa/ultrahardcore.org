@@ -37,6 +37,37 @@ MatchRouter.use(bodyParser.json())
   version: String
 */
 
+MatchRouter.route('/conflicts').post(async (req, res) => {
+  console.log(req.body)
+  if (!req.body.time) {
+    return res.status(404).json({
+      success: false,
+      errors: ['Invalid time']
+    })
+  }
+  const openTime = new Date(req.body.time);
+  const fifteenMinutesBefore = new Date(openTime.getTime() - 15 * 60000);
+  const fifteenMinutesAfter = new Date(openTime.getTime() + 15 * 60000);
+  let matches = await Match.find({
+    opensAt: {
+      $gte: fifteenMinutesBefore,
+      $lte: fifteenMinutesAfter
+    }
+  })
+  if (matches.length == 0) {
+    return res.status(200).json({
+      success: true,
+      errors: ['Could not find any conflicts']
+    })
+  } else {
+    return res.json({
+      success: false,
+      errors: ['Found conflicts, please pick a different time before making your matchpost.'],
+      matches: matches
+    })
+  }
+})
+
 MatchRouter.route('/upcoming').get(async (req, res) => {
   let matches = await Match.find({
     opensAt: {
