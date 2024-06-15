@@ -7,6 +7,7 @@
   import Footer from '../../../components/Footer.svelte';
   import { Twitter, Gamepad, Newspaper, Laptop, Link, CheckCircle2, XCircle, ShoppingBag, Ruler, PersonStanding, Dice6, Binary, AlarmClock } from 'lucide-svelte';
   import moment from 'moment';
+    import { error } from '@sveltejs/kit';
     //import { error } from '@sveltejs/kit';
     //import { BACKEND_URI } from '$env/static/private';
 
@@ -138,7 +139,7 @@
   let serverMatches: any[] = []
 
   async function fetchMatches() {
-    let response = await fetch("${BACKEND_URI}/matches/upcoming", {
+    let response = await fetch(`${BACKEND_URI}/matches/upcoming`, {
       method: "GET",
     })
     let payload = await response.json()
