@@ -27,7 +27,7 @@
     twitterUrl: string,
     scenarioDescriptions: string,
     websiteUrl: string,
-    extraLinks: object[],
+    extraLinks: any[],
     customizableRules: object[],
     configOptions: object[]
   }
@@ -60,7 +60,7 @@
     if (payload.success) {
       server = payload.server
       if (server.extraServers.length > 0) {
-        server.extraServers.forEach(extra => {
+        server.extraServers.forEach((extra: any) => {
           extraServers.push(`${extra.name} (${extra.ip})`)
         })
         extraServers.push(`Hub (${server.ip})`)
