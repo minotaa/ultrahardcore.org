@@ -24,6 +24,21 @@
     }
   })
 
+  token.subscribe(async (value) => {
+    const response = await fetch(`${BACKEND_URI}/account/get`, {
+      method: 'GET', // @ts-ignore
+      headers: {
+        'Authorization': $token
+      }
+    })
+    const payload = await response.json()
+    if (payload.success) {
+      user = payload.user
+    } else {
+      token.set(undefined)
+    }
+  })
+
   const time = readable("", set => {
     set(moment().format("HH:mm:ss"));
     const interval = setInterval(() => {
