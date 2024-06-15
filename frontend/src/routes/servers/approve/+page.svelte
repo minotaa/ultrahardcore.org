@@ -8,6 +8,7 @@
   import moment from "moment";
   import { toast } from '@zerodevx/svelte-toast'
   import { CheckCircle2, XCircle } from "lucide-svelte";
+    import { BACKEND_URI } from "$env/static/private";
 
   interface Server {
     name: string,
@@ -37,7 +38,7 @@
   let user: any
   let loadedYet = false
   onMount(async () => {
-    let response = await fetch(`http://localhost:9000/account/get`, {
+    let response = await fetch(`${BACKEND_URI}/account/get`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -53,7 +54,7 @@
       token.set(undefined)
       user = null
     }
-    response = await fetch(`http://localhost:9000/server/getApprovableServers`, {
+    response = await fetch(`${BACKEND_URI}/server/getApprovableServers`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -68,7 +69,7 @@
 
   async function getServers() {
     loadedYet = false
-    let response = await fetch(`http://localhost:9000/server/getApprovableServers`, {
+    let response = await fetch(`${BACKEND_URI}/server/getApprovableServers`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -98,7 +99,7 @@
   }
 
   async function getOwner(id: string) {
-    const response = await fetch(`http://localhost:9000/account/getId?id=${id}`, {
+    const response = await fetch(`${BACKEND_URI}/account/getId?id=${id}`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -110,7 +111,7 @@
   }
 
   async function approve(server: Server) {
-    await fetch(`http://localhost:9000/server/approve?server=${server.id}`, {
+    await fetch(`${BACKEND_URI}/server/approve?server=${server.id}`, {
       method: 'POST', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -122,7 +123,7 @@
   }
 
   async function deny(server: Server) {
-    await fetch(`http://localhost:9000/server/deny?server=${server.id}`, {
+    await fetch(`${BACKEND_URI}/server/deny?server=${server.id}`, {
       method: 'POST', // @ts-ignore
       headers: {
         'Authorization': $token

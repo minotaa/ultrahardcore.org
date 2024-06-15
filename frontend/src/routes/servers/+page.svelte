@@ -8,6 +8,7 @@
   import { token } from "../../hooks/auth"
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
+    import { BACKEND_URI } from "$env/static/private";
 
   interface Server {
     name: string,
@@ -38,7 +39,7 @@
   let list: Server[] = []
   let loadedYet = false
   onMount(async () => {
-    const response = await fetch(`http://localhost:9000/account/get`, {
+    const response = await fetch(`${BACKEND_URI}/account/get`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -49,7 +50,7 @@
       user = payload.user
       servers = payload.user.servers
       for await (const server of servers) {
-        const response = await fetch(`http://localhost:9000/server/get?server=${server}`, {
+        const response = await fetch(`${BACKEND_URI}/server/get?server=${server}`, {
           method: 'GET', // @ts-ignore
           headers: {
             'Authorization': $token
@@ -84,7 +85,7 @@
   }
 
   async function getMembership(userId: string, serverId: string) {
-    const response = await fetch(`http://localhost:9000/server/getMember?user=${userId}&server=${serverId}`, {
+    const response = await fetch(`${BACKEND_URI}/server/getMember?user=${userId}&server=${serverId}`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token
@@ -96,7 +97,7 @@
   }
 
   async function getOwner(id: string) {
-    const response = await fetch(`http://localhost:9000/account/getId?id=${id}`, {
+    const response = await fetch(`${BACKEND_URI}/account/getId?id=${id}`, {
       method: 'GET', // @ts-ignore
       headers: {
         'Authorization': $token

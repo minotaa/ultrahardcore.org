@@ -6,11 +6,13 @@
   import { RefreshCcw, Ruler, PersonStanding, Dice6, Binary, AlarmClock } from "lucide-svelte";
   import moment from "moment";
   import { goto } from "$app/navigation";
+  import { BACKEND_URI } from "$env/static/private";
+  
 
   let matches: any[] = []
 
   async function fetchMatches() {
-    let response = await fetch("http://localhost:9000/matches/upcoming", {
+    let response = await fetch(`${BACKEND_URI}/matches/upcoming`, {
       method: "GET",
     })
     let payload = await response.json()
@@ -70,7 +72,7 @@
   }
 
   async function getUser(id: string) {
-    const response = await fetch(`http://localhost:9000/account/getId?id=${id}`, {
+    const response = await fetch(`${BACKEND_URI}/account/getId?id=${id}`, {
       method: 'GET' // @ts-ignore
     })
     const payload = await response.json()
@@ -79,7 +81,7 @@
   }
 
   async function getServer(id: string) {
-    const response = await fetch(`http://localhost:9000/server/get?server=${id}`, {
+    const response = await fetch(`${BACKEND_URI}/server/get?server=${id}`, {
       method: 'GET' // @ts-ignore
     })
     const payload = await response.json()
