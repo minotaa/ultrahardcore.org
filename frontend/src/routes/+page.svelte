@@ -6,7 +6,8 @@
   import { RefreshCcw, Ruler, PersonStanding, Dice6, Binary, AlarmClock } from "lucide-svelte";
   import moment from "moment";
   import { goto } from "$app/navigation";
-  import { BACKEND_URI } from "$env/static/private";
+  import { BACKEND_URI } from "../hooks/auth";
+  //import { BACKEND_URI } from "$env/static/private";
   
 
   let matches: any[] = []

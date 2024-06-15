@@ -5,9 +5,9 @@
   import Footer from "../../components/Footer.svelte";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { token } from "../../hooks/auth";
+  import { token, BACKEND_URI } from "../../hooks/auth";
   import { toast } from "@zerodevx/svelte-toast"
-    import { BACKEND_URI } from "$env/static/private";
+    //import { BACKEND_URI } from "$env/static/private";
 
   let email: string 
   let username: string

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { token } from "../../../hooks/auth";
+  import { token, BACKEND_URI } from "../../../hooks/auth";
   import { goto } from "$app/navigation";
   import { toast } from "@zerodevx/svelte-toast";
   import { page } from "$app/stores";
@@ -8,7 +8,7 @@
   import { error } from "@sveltejs/kit";
   import Footer from "../../../components/Footer.svelte";
   import { AlarmClock, Dice6, PersonStanding, Ruler, Copy, Twitter, Newspaper, Laptop, ShoppingBag, Link, Gamepad, Check, X } from "lucide-svelte";
-    import { BACKEND_URI } from "$env/static/private";
+    //import { BACKEND_URI } from "$env/static/private";
 
   interface Match {
     createdAt: Date,

@@ -3,12 +3,12 @@
   import { goto } from '$app/navigation';
   import { toast } from '@zerodevx/svelte-toast';
   import { onMount } from 'svelte';
-  import { token } from '../../../hooks/auth';
+  import { token, BACKEND_URI } from '../../../hooks/auth';
   import Footer from '../../../components/Footer.svelte';
   import { Twitter, Gamepad, Newspaper, Laptop, Link, CheckCircle2, XCircle, ShoppingBag, Ruler, PersonStanding, Dice6, Binary, AlarmClock } from 'lucide-svelte';
   import moment from 'moment';
-    import { error } from '@sveltejs/kit';
-    import { BACKEND_URI } from '$env/static/private';
+    //import { error } from '@sveltejs/kit';
+    //import { BACKEND_URI } from '$env/static/private';
 
   interface Server {
     name: string,

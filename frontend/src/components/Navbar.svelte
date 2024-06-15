@@ -3,10 +3,10 @@
   import { Clock, ChevronDown, Server, ServerCrash, UserMinus, Wrench, StickyNote } from 'lucide-svelte'
   import moment from 'moment'
   import { readable, writable } from 'svelte/store'
-  import { token } from "../hooks/auth"
+  import { token, BACKEND_URI } from "../hooks/auth"
   import { onMount } from "svelte";
   import { toast } from "@zerodevx/svelte-toast"
-    import { BACKEND_URI } from "$env/static/private";
+    //import { BACKEND_URI } from "$env/static/private";
 
   let user: any
   onMount(async () => {
