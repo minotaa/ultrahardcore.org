@@ -4,10 +4,10 @@
   import Footer from "../../../components/Footer.svelte";
   import { HardDrive } from "lucide-svelte";
 
-  import { token } from "../../../hooks/auth"
+  import { token, BACKEND_URI } from "../../../hooks/auth"
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-    import { BACKEND_URI } from "$env/static/private";
+    //import { BACKEND_URI } from "$env/static/private";
 
   let user: any
   onMount(async () => {

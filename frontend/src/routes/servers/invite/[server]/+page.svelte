@@ -1,12 +1,12 @@
 <script lang="ts">
   import { page } from '$app/stores'
   import { onMount } from 'svelte';
-  import { token } from "../../../../hooks/auth";
+  import { token, BACKEND_URI } from "../../../../hooks/auth";
   import moment from "moment";
   import { toast } from '@zerodevx/svelte-toast'
   import { goto } from '$app/navigation';
   import Footer from '../../../../components/Footer.svelte';
-    import { BACKEND_URI } from '$env/static/private';
+    //import { BACKEND_URI } from '$env/static/private';
 
   interface Server {
     name: string,

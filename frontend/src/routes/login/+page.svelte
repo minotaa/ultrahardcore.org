@@ -3,12 +3,12 @@
   import { LogIn } from 'lucide-svelte'
   import Navbar from "../../components/Navbar.svelte"
   import { browser } from "$app/environment";
-  import { token } from "../../hooks/auth"
+  import { token, BACKEND_URI } from "../../hooks/auth"
   import { goto } from "$app/navigation";
   import Footer from "../../components/Footer.svelte";
   import { onMount } from "svelte";
   import { toast } from '@zerodevx/svelte-toast'
-    import { BACKEND_URI } from "$env/static/private";
+    //import { BACKEND_URI } from "$env/static/private";
 
   let user: any
   onMount(async () => {

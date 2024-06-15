@@ -5,10 +5,10 @@
   import moment from "moment"
   import { XCircle, CheckCircle, PlusCircle, CheckCircle2 } from "lucide-svelte";
   
-  import { token } from "../../hooks/auth"
+  import { token, BACKEND_URI } from "../../hooks/auth"
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-    import { BACKEND_URI } from "$env/static/private";
+    //import { BACKEND_URI } from "$env/static/private";
 
   interface Server {
     name: string,

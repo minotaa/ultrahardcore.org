@@ -5,10 +5,9 @@
   import Footer from "../../components/Footer.svelte";
   import { AlarmClock, ArrowUpRight, Binary, Dice6, Key, Milestone, PersonStanding, PlusCircle, Ruler, X } from "lucide-svelte";
   import { onMount } from "svelte";
-  import { token } from "../../hooks/auth";
+  import { BACKEND_URI, token } from "../../hooks/auth";
   import { goto } from "$app/navigation";
   import { toast } from "@zerodevx/svelte-toast";
-    import { BACKEND_URI } from "$env/static/private";
 
   function toNearest15Minutes(date: Date) {
     const start = moment(date)

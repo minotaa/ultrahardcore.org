@@ -4,11 +4,11 @@
   import Footer from "../../../components/Footer.svelte";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { token } from "../../../hooks/auth";
+  import { token, BACKEND_URI } from "../../../hooks/auth";
   import moment from "moment";
   import { toast } from '@zerodevx/svelte-toast'
   import { CheckCircle2, XCircle } from "lucide-svelte";
-    import { BACKEND_URI } from "$env/static/private";
+    //import { BACKEND_URI } from "$env/static/private";
 
   interface Server {
     name: string,

@@ -38,7 +38,6 @@ MatchRouter.use(bodyParser.json())
 */
 
 MatchRouter.route('/conflicts').post(async (req, res) => {
-  console.log(req.body)
   if (!req.body.time) {
     return res.status(404).json({
       success: false,
