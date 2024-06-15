@@ -3,7 +3,7 @@
   import { readable } from "svelte/store";
   import calendarize from 'calendarize'
   import Footer from "../../components/Footer.svelte";
-  import { ArrowUpRight, Key, Milestone, PlusCircle, X } from "lucide-svelte";
+  import { AlarmClock, ArrowUpRight, Binary, Dice6, Key, Milestone, PersonStanding, PlusCircle, Ruler, X } from "lucide-svelte";
   import { onMount } from "svelte";
   import { token } from "../../hooks/auth";
   import { goto } from "$app/navigation";
@@ -91,8 +91,11 @@
     checkConflicts()
   }
 
-  function checkConflicts() {
+  let canPost = false
+  async function checkConflicts() {
     errors = []
+    error = []
+    conflicts = []
     if (desiredTime.isBefore(moment())) { 
       errors.push("Your time must be 30 minutes in advance.")
       return
@@ -100,6 +103,26 @@
     if (desiredTime.diff(moment()) < 1800000) { 
       errors.push("Your time must be 30 minutes in advance.")
       return
+    }
+    let response = await fetch(`http://localhost:9000/matches/conflicts`, {
+      method: 'POST', // @ts-ignore
+      headers: {
+        'Authorization': $token,
+        'Content-Type': 'application/json'
+      }, 
+      body: JSON.stringify({
+        time: desiredTime.toDate()
+      })
+    })
+    let payload = await response.json()
+    if (!payload.success) {
+      error = payload.errors
+      canPost = false
+      if (payload.matches != null) {
+        conflicts = payload.matches
+      }
+    } else {
+      canPost = true
     }
   }
 
@@ -156,6 +179,8 @@
   let showServerConfig: boolean = false
 
   async function postMatch(e: Event) {
+    await checkConflicts()
+    if (!canPost) return
     let response = await fetch("http://localhost:9000/matches/post", {
       method: 'POST',
       headers: {
@@ -217,6 +242,53 @@
   let user: any
   let servers: Server[]
   let loadedYet: boolean
+  let conflicts: any[] = []
+
+  function getTeamStyle(style: string) {
+    let styles = {
+      "ffa": "FFA",
+      "chosen": "Chosen",
+      "random": "Random",
+      "captains": "Captains",
+      "picked": "Picked",
+      "auction": "Auction",
+      "mystery": "Mystery",
+      "rvb": "RvB",
+      "rigged": "Rigged",
+      "wished": "Wished"
+    }
+    //@ts-ignore
+    return styles[style]
+  }
+
+  async function getServer(id: string) {
+    const response = await fetch(`http://localhost:9000/server/get?server=${id}`, {
+      method: 'GET' // @ts-ignore
+    })
+    const payload = await response.json()
+    if (payload.success) {
+      return payload.server
+    } else {
+      return null
+    }
+  }
+
+  function getRegion(region: string) {
+    if (region == "na") {
+      return "🌎 North America"
+    } else if (region == "au") {
+      return "🌏 Oceania"
+    } else if (region == "as") {
+      return "🌏 Asia"
+    } else if (region == "sa") {
+      return "🌎 South America"
+    } else if (region == "af") {
+      return "🌍 Africa"
+    } else if (region == "eu") {
+      return "🌍 Europe" 
+    }
+  }
+
   onMount(async () => {
     loadedYet = false
     let response = await fetch(`http://localhost:9000/account/get`, {
@@ -306,6 +378,7 @@
         })
       }
     }
+    checkConflicts()
   }
 </script>
 
@@ -500,7 +573,7 @@
           {#each scenarios as scenario, index} 
             <li>
               <div class="pt-1 pr-2 pb-1 flex flex-row gap-4 w-auto hideable rounded-lg">
-                <input on:keydown={handleScenKeyPress} bind:value={scenarios[index]} class="w-1/4 shadow dark:text-white dark:bg-slate-700 bg-slate-100 rounded-lg pt-2 pb-2 pl-2 w-60" placeholder="scenario" type="text" name="scenario" id="scenario" required/>
+                <input on:keypress={handleScenKeyPress} bind:value={scenarios[index]} class="w-1/4 shadow dark:text-white dark:bg-slate-700 bg-slate-100 rounded-lg pt-2 pb-2 pl-2 w-60" placeholder="scenario" type="text" name="scenario" id="scenario" required/>
                 <button on:click={() => { removeScenario(index) }} class="hidden hoverHidden inline text-gray-100"><X class="inline"/></button>
               </div>
             </li>
@@ -508,11 +581,53 @@
           <button on:click={addScenario} class="w-fit mt-2 inline bg-green-400 dark:bg-green-500 text-md text-white pl-2 pr-2 pt-1 pb-1 rounded-lg"><PlusCircle class="mb-1 inline"/> Add Scenarios</button>
         </ul>
       </div>
-      <h2 class="font-bold text-2xl dark:text-white mt-4">Matchpost Conflicts</h2>
-      {#if error != null}
-          <h2 class="text-center text-md bg-red-100 dark:bg-red-500 shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4"><strong>Errors:</strong> {error.join(', ')}</h2>
+      {#if error != null && error.length > 0}
+          <h2 class="w-fit dark:text-white text-center text-md bg-red-100 dark:bg-red-500 shadow rounded-lg pt-2 pb-2 pr-8 pl-8 mb-4 mt-4"><strong>Errors:</strong> {error.join(', ')}</h2>
       {/if}
-      <button type="submit" class="w-fit inline bg-green-400 dark:bg-green-500 text-md text-white mt-6 pl-2 pr-2 pt-1 pb-1 rounded-lg"><Milestone class="mb-1 inline"/> Create Match</button>
+      {#if conflicts.length > 0}
+        <h2 class="font-bold text-2xl dark:text-white mt-4 mb-2">Matchpost Conflicts</h2>
+        <div class="gap-4 flex grid grid-flow-row-dense grid-cols-3">
+          {#each conflicts as match}
+            <a class="shadow dark:bg-zinc-800 rounded-lg bg-slate-100 pl-4 pr-6 pt-4 pb-4 w-auto dark:hover:bg-zinc-700 hover:bg-slate-200 transition-colors">
+              <div class="flex flex-wrap gap-x-2 gap-y-0">
+                {#await getServer(match.serverId)}
+                  <h3 class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-sky-500 shadow inline">Fetching region...</h3>
+                {:then server}
+                  <h3 class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-sky-500 shadow inline">{getRegion(server.region)}</h3>
+                {/await}
+                {#if (Math.abs(moment().diff(moment(match.opensAt), 'minutes')) <= 15)}
+                  <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-red-600 shadow inline" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>{moment(match.opensAt) > moment() ? "Opens" : "Opened"} <strong>{moment(match.opensAt).fromNow()}</strong></p>
+                {:else if (Math.abs(moment().diff(moment(match.opensAt), 'minutes')) <= 30)}
+                  <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-yellow-500 shadow inline" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>{moment(match.opensAt) > moment() ? "Opens" : "Opened"} <strong>{moment(match.opensAt).fromNow()}</strong></p>
+                {:else}
+                  <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-green-500 shadow inline" title={moment(match.opensAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}>{moment(match.opensAt) > moment() ? "Opens" : "Opened"} <strong>{moment(match.opensAt).fromNow()}</strong></p>
+                {/if}
+                <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow">{match.version}</p>
+                {#if match.teamStyle != "ffa" && match.teamStyle != "auction" && match.teamStyle != "rvb"}
+                  <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow inline">{getTeamStyle(match.teamStyle)} To{match.teamSize}</p>
+                {:else}
+                  <p class="text-md mt-2 dark:text-white rounded-lg pl-3 pr-3 bg-gray-500 shadow inline">{getTeamStyle(match.teamStyle)}</p>
+                {/if}
+              </div>
+              <h2 class="mt-2 text-lg dark:text-white font-bold mb-2">{match.displayName}'s #{match.hostCount}</h2>
+              <p class="text-md dark:text-white break-normal"><Dice6 class="mb-1 mr-2 inline"/>Scenarios: <code class="text-md dark:text-white">{match.scenarios.join(', ')}</code></p>
+              <p class="text-md dark:text-white"><Ruler class="mb-1 mr-2 inline"/>Border: <code>{match.mapSize}x{match.mapSize}</code></p>
+              <p class="text-md dark:text-white"><Binary class="mb-1 mr-2 inline"/>Server IP: <code>{match.serverIp}</code> 
+                {#await getServer(match.serverId)}
+                  <h3 class="text-md dark:text-white inline">(Fetching server...)</h3>
+                {:then server}
+                  <h3 class="text-md dark:text-white inline">(<a href="/server/{server.id}" class="hover:underline font-bold text-sky-300 dark:text-sky-500">{server.name}</a>)</h3>
+                {/await}</p>
+                <p class="text-md dark:text-white"><PersonStanding class=" mr-2 inline"/>Slots: <code>{match.slots}</code></p>
+                <h3 class="text-md dark:text-white"><AlarmClock class="mb-1 inline"/>&nbsp; Final Heal: <strong>{match.finalHealOccurs}m</strong> • PvP: <strong>{match.pvpEnabledIn}m</strong> • Meetup: <strong>{match.meetupOccursAt}m</strong></h3>
+              </a>
+          {/each}
+        </div>
+      {/if}
+      {#if canPost}
+        <hr class="border-0 dark:bg-zinc-700 bg-slate-100 mt-4 h-px"/>
+        <button type="submit" class="w-fit inline bg-green-400 dark:bg-green-500 text-md text-white mt-4 pl-2 pr-2 pt-1 pb-1 rounded-lg"><Milestone class="mb-1 inline"/> Create Match</button>
+      {/if}
     </form>
   {:else}
     {#if loadedYet == true}
