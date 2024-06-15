@@ -316,6 +316,7 @@
     } else {
       goto('/')
       toast.push("No servers to post on.")
+      return
     }
     loadedYet = true
   })
