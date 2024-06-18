@@ -256,7 +256,7 @@
     </div>
     <hr class="border-0 dark:bg-zinc-800 bg-slate-100 mt-6 h-px"/>
     <h1 class="pt-4 font-bold text-2xl dark:text-white">Upcoming {server.name} matches</h1>
-    <h2 class="text-sm dark:text-white mb-4 italic">Last fetched @ {lastFetched.format("HH:mm:ss")}</h2>
+    <h2 class="text-sm dark:text-white mb-4">Last fetched @ {lastFetched.format("HH:mm:ss")}</h2>
     <div class="gap-4 flex grid grid-flow-row-dense grid-cols-3">
       {#each serverMatches as match}
       <a class="shadow dark:bg-zinc-800 rounded-lg bg-slate-100 pl-4 pr-6 pt-4 pb-4 w-auto dark:hover:bg-zinc-700 hover:bg-slate-200 transition-colors" href={'/match/' + match.id}>
